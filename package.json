@@ -1,0 +1,42 @@
+{
+  "name": "jsonrpc-lite",
+  "description": "Parse and Serialize JSON-RPC2 messages in node.js, io.js or browser.",
+  "authors": [
+    "Ruben LZ Tan",
+    "Yan Qing <admin@zensh.com>"
+  ],
+  "version": "0.1.0",
+  "main": "jsonrpc.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:teambition/jsonrpc-lite.git"
+  },
+  "homepage": "https://github.com/teambition/jsonrpc-lite",
+  "keywords": [
+    "json",
+    "jsonrpc",
+    "json-rpc",
+    "jsonrpc2",
+    "serialize",
+    "parse",
+    "message"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-jshint": "^1.9.4",
+    "gulp-mocha": "^2.0.1",
+    "gulp-sequence": "^0.3.2",
+    "mocha": "^2.2.1"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "ignore": [
+    "**/.*",
+    "test",
+    "gulpfile.js",
+    "bower.json",
+    "component.json"
+  ]
+}

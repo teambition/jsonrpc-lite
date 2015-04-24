@@ -1,0 +1,26 @@
+{
+  "name": "jsonrpc-lite",
+  "description": "Parse and Serialize JSON-RPC2 messages in node.js, io.js or browser.",
+  "main": "jsonrpc.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/teambition/jsonrpc-lite",
+  "authors": [
+    "Ruben LZ Tan",
+    "Yan Qing <admin@zensh.com>"
+  ],
+  "keywords": [
+    "json",
+    "jsonrpc",
+    "json-rpc",
+    "jsonrpc2",
+    "serialize",
+    "parse",
+    "message"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "test",
+    "gulpfile.js"
+  ]
+}
