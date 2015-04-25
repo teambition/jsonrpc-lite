@@ -97,12 +97,26 @@
    * @api public
    */
   jsonrpc.parse = function (message) {
+    if (typeof message !== 'string') return {
+      type: 'invalid',
+      payload: JsonRpcError.invalidRequest()
+    };
+
     try {
       message = JSON.parse(message);
     } catch (err) {
-      throw JsonRpcError.parseError(err);
+      return {
+        type: 'invalid',
+        payload: JsonRpcError.parseError(err)
+      };
     }
+
     if (!isArray(message)) return parseObject(message);
+    if (!message.length) return {
+      type: 'invalid',
+      payload: JsonRpcError.invalidRequest()
+    };
+
     for (var i = 0, len = message.length; i < len; i++)
       message[i] = parseObject(message[i]);
 
@@ -128,7 +142,7 @@
    * JsonRpcError Class
    *
    * @param  {String} message
-   * @param  {Integer} code: optional
+   * @param  {Integer} code
    * @return {String} name: optional
    * @api public
    */
@@ -161,30 +175,21 @@
     return new JsonRpcError('Parse error', -32700, data);
   };
 
-  /**
-   * @api private
-   */
   function requestObject(id, method, params) {
     var message = new JsonRpc();
     message.id = id;
     message.method = method;
-    if (params) message.params = params;
+    if (params != null) message.params = params;
     return message;
   }
 
-  /**
-   * @api private
-   */
   function notificationObject(method, params) {
     var message = new JsonRpc();
     message.method = method;
-    if (params) message.params = params;
+    if (params != null) message.params = params;
     return message;
   }
 
-  /**
-   * @api private
-   */
   function successObject(id, result) {
     var message = new JsonRpc();
     message.id = id;
@@ -192,9 +197,6 @@
     return message;
   }
 
-  /**
-   * @api private
-   */
   function errorObject(id, error) {
     var message = new JsonRpc();
     message.id = id;
@@ -202,15 +204,12 @@
     return message;
   }
 
-  /**
-   * @api private
-   */
   function parseObject(obj) {
     var error = null;
     var res = {type: 'invalid'};
 
     if (obj.jsonrpc !== JsonRpc.VERSION) {
-      error = JsonRpcError.internalError();
+      error = JsonRpcError.invalidRequest();
 
     } else if (!hasOwnProperty.call(obj, 'id')) {
       error = validateMessage('notification', obj);
@@ -242,7 +241,7 @@
         res.type = 'error';
         res.payload = errorObject(obj.id, obj.error);
       }
-    } else error = JsonRpcError.internalError();
+    } else error = JsonRpcError.invalidRequest();
 
     if (error) res.payload = error;
     return res;
@@ -261,14 +260,15 @@
         return checkId(data.id) || checkResult(data.result);
 
       case 'error':
-        return checkId(data.id) || checkError(data.error);
+        return checkId(data.id, true) || checkError(data.error);
     }
     return JsonRpcError.internalError();
   }
 
-  function checkId(id) {
-    return (isNull(id) || isString(id) || isInteger(id)) ? null :
-      JsonRpcError.internalError('"id" must be provided. It must be either a string or an integer.');
+  function checkId(id, maybeNull) {
+    if (maybeNull && id === null) return null;
+    return (isString(id) || isInteger(id)) ? null :
+      JsonRpcError.internalError('"id" must be provided, a string or an integer.');
   }
 
   function checkMethod(method) {
@@ -280,14 +280,14 @@
   }
 
   function checkParams(params) {
-    if (isNull(params)) return null;
+    if (params === void 0) return null;
     if (isArray(params) || isObject(params)) {
       // ensure params can be stringify.
       try {
         JSON.stringify(params);
         return null;
-      } catch (e) {
-        return JsonRpcError.parseError(e.message);
+      } catch (err) {
+        return JsonRpcError.parseError(err);
       }
     }
     return JsonRpcError.invalidParams();
@@ -304,10 +304,6 @@
       return JsonRpcError.internalError('Message must exist or must be a string.');
 
     return null;
-  }
-
-  function isNull(obj) {
-    return obj === null;
   }
 
   function isString(obj) {
