@@ -1,11 +1,11 @@
 'use strict'
-/*global describe, it*/
 
 var assert = require('assert')
+var tman = require('tman')
 var jsonrpc = require('../jsonrpc')
 
-describe('jsonrpc', function () {
-  it('jsonrpc.request', function (done) {
+tman.suite('jsonrpc', function () {
+  tman.it('jsonrpc.request', function () {
     assert.throws(function () {
       jsonrpc.request(1.1, 'update')
     }, jsonrpc.JsonRpcError)
@@ -52,11 +52,9 @@ describe('jsonrpc', function () {
       method: 'update',
       params: {list: []}
     })
-
-    done()
   })
 
-  it('jsonrpc.notification', function (done) {
+  tman.it('jsonrpc.notification', function () {
     assert.throws(function () {
       jsonrpc.notification(1)
     }, jsonrpc.JsonRpcError)
@@ -92,11 +90,9 @@ describe('jsonrpc', function () {
       method: 'update',
       params: {list: []}
     })
-
-    done()
   })
 
-  it('jsonrpc.success', function (done) {
+  tman.it('jsonrpc.success', function () {
     assert.throws(function () {
       jsonrpc.success(1)
     }, jsonrpc.JsonRpcError)
@@ -119,11 +115,9 @@ describe('jsonrpc', function () {
       id: 123,
       result: []
     })
-
-    done()
   })
 
-  it('jsonrpc.error', function (done) {
+  tman.it('jsonrpc.error', function () {
     assert.throws(function () {
       jsonrpc.error(1)
     }, jsonrpc.JsonRpcError)
@@ -193,11 +187,9 @@ describe('jsonrpc', function () {
       id: 123,
       error: {code: -32700, message: 'Parse error'}
     })
-
-    done()
   })
 
-  it('jsonrpc.parse', function (done) {
+  tman.it('jsonrpc.parse', function () {
     var res = null
 
     res = jsonrpc.parse(1)
@@ -351,7 +343,5 @@ describe('jsonrpc', function () {
 
     assert.strictEqual(parsedBatch[4].type, 'invalid')
     assert.deepEqual(parsedBatch[4].payload, {code: -32600, message: 'Invalid request'})
-
-    done()
   })
 })

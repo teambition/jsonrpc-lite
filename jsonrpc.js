@@ -17,8 +17,8 @@
   var toString = Object.prototype.toString
   var hasOwnProperty = Object.prototype.hasOwnProperty
   var isArray = Array.isArray || function (obj) {
-      return toString.call(obj) === '[object Array]'
-    }
+    return toString.call(obj) === '[object Array]'
+  }
 
   var jsonrpc = {
     JsonRpc: JsonRpc,
@@ -224,15 +224,12 @@
     else if (!hasOwnProperty.call(obj, 'id')) {
       payload = new NotificationObject(obj.method, obj.params)
       error = validateMessage(payload)
-
     } else if (hasOwnProperty.call(obj, 'method')) {
       payload = new RequestObject(obj.id, obj.method, obj.params)
       error = validateMessage(payload)
-
     } else if (hasOwnProperty.call(obj, 'result')) {
       payload = new SuccessObject(obj.id, obj.result)
       error = validateMessage(payload)
-
     } else if (hasOwnProperty.call(obj, 'error')) {
       if (!obj.error) {
         error = JsonRpcError.internalError()
@@ -270,8 +267,7 @@
 
   function checkId (id, maybeNull) {
     if (maybeNull && id === null) return null
-    return (isString(id) || isInteger(id)) ? null :
-      JsonRpcError.internalError('"id" must be provided, a string or an integer.')
+    return (isString(id) || isInteger(id)) ? null : JsonRpcError.internalError('"id" must be provided, a string or an integer.')
   }
 
   function checkMethod (method) {

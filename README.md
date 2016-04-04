@@ -1,8 +1,9 @@
 # JSON-RPC lite
-Parse and Serialize JSON-RPC2 messages in node.js, io.js or browser. Inspired by https://github.com/soggie/jsonrpc-serializer
+Parse and Serialize JSON-RPC2 messages in node.js or browser. Inspired by https://github.com/soggie/jsonrpc-serializer
 
 [![NPM version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
+[![Downloads][downloads-image]][downloads-url]
 
 **A implementation of [JSON-RPC 2.0 specifications](http://jsonrpc.org/specification)**
 
@@ -165,3 +166,6 @@ var error = new jsonrpc.JsonRpcError('some error', 999);
 
 [travis-url]: https://travis-ci.org/teambition/jsonrpc-lite
 [travis-image]: http://img.shields.io/travis/teambition/jsonrpc-lite.svg
+
+[downloads-url]: https://npmjs.org/package/jsonrpc-lite
+[downloads-image]: http://img.shields.io/npm/dm/jsonrpc-lite.svg?style=flat-square
