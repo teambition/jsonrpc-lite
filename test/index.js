@@ -131,14 +131,6 @@ tman.suite('jsonrpc', function () {
     }, jsonrpc.JsonRpcError)
 
     assert.throws(function () {
-      jsonrpc.error(123, new jsonrpc.JsonRpcError(111, 111))
-    }, jsonrpc.JsonRpcError)
-
-    assert.throws(function () {
-      jsonrpc.error(123, new jsonrpc.JsonRpcError('111', '111'))
-    }, jsonrpc.JsonRpcError)
-
-    assert.throws(function () {
       jsonrpc.error(123, new Error('test', 1))
     }, jsonrpc.JsonRpcError)
 

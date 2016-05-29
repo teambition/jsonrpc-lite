@@ -13,11 +13,14 @@
 }(typeof window === 'object' ? window : this, function () {
   'use strict'
 
-  var undef
+  var undef = void 0
   var toString = Object.prototype.toString
   var hasOwnProperty = Object.prototype.hasOwnProperty
   var isArray = Array.isArray || function (obj) {
     return toString.call(obj) === '[object Array]'
+  }
+  var isInteger = Number.isSafeInteger || function (num) {
+    return num === Math.floor(num)
   }
   var captureStackTrace = Error.captureStackTrace || function captureStackTrace (ctx) {
     ctx.stack = new Error().stack
@@ -191,11 +194,9 @@
    * @api public
    */
   function JsonRpcError (message, code, data) {
-    Error.call(this, message)
     captureStackTrace(this, this.constructor)
-
-    this.message = message
-    this.code = code
+    this.message = message === undef ? '' : String(message)
+    this.code = isInteger(code) ? code : 0
     if (data != null) this.data = data
   }
 
@@ -240,9 +241,13 @@
       if (!obj.error) {
         error = JsonRpcError.internalError()
       } else {
-        obj.error = new JsonRpcError(obj.error.message, obj.error.code, obj.error.data)
-        payload = new ErrorObject(obj.id, obj.error)
-        error = validateMessage(payload)
+        var err = new JsonRpcError(obj.error.message, obj.error.code, obj.error.data)
+        if (err.message !== obj.error.message || err.code !== obj.error.code) {
+          error = JsonRpcError.internalError()
+        } else {
+          payload = new ErrorObject(obj.id, err)
+          error = validateMessage(payload)
+        }
       }
     }
 
@@ -316,10 +321,6 @@
 
   function isString (obj) {
     return obj && typeof obj === 'string'
-  }
-
-  function isInteger (obj) {
-    return typeof obj === 'number' && (obj % 1 === 0)
   }
 
   function isObject (obj) {
