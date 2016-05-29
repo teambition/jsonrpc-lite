@@ -142,7 +142,7 @@ tman.suite('jsonrpc', function () {
       jsonrpc.error(123, new Error('test', 1))
     }, jsonrpc.JsonRpcError)
 
-    assert.strictEqual(JSON.stringify(jsonrpc.error(null, new jsonrpc.JsonRpcError('test', 1))), '{"jsonrpc":"2.0","id":null,"error":{"code":1,"message":"test"}}')
+    assert.strictEqual(JSON.stringify(jsonrpc.error(null, new jsonrpc.JsonRpcError('test', 1))), '{"jsonrpc":"2.0","id":null,"error":{"message":"test","code":1}}')
     assert.strictEqual(jsonrpc.error('123', new jsonrpc.JsonRpcError('test', 1)) instanceof jsonrpc.JsonRpc, true)
     assert.strictEqual(jsonrpc.error('123', new jsonrpc.JsonRpcError('test', 1)).name, 'error')
 

@@ -19,6 +19,9 @@
   var isArray = Array.isArray || function (obj) {
     return toString.call(obj) === '[object Array]'
   }
+  var captureStackTrace = Error.captureStackTrace || function captureStackTrace (ctx) {
+    ctx.stack = new Error().stack
+  }
 
   var jsonrpc = {
     JsonRpc: JsonRpc,
@@ -188,8 +191,11 @@
    * @api public
    */
   function JsonRpcError (message, code, data) {
-    this.code = code
+    Error.call(this, message)
+    captureStackTrace(this, this.constructor)
+
     this.message = message
+    this.code = code
     if (data != null) this.data = data
   }
 
