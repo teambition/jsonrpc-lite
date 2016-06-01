@@ -186,37 +186,37 @@ tman.suite('jsonrpc', function () {
 
     res = jsonrpc.parse(1)
     assert.strictEqual(res.type, 'invalid')
-    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request'})
+    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request', data: 1})
 
     res = jsonrpc.parse('1')
     assert.strictEqual(res.type, 'invalid')
-    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request'})
+    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request', data: '1'})
 
     res = jsonrpc.parse('{"id":')
     assert.strictEqual(res.type, 'invalid')
     assert.strictEqual(res.payload.code, -32700)
     assert.strictEqual(res.payload.message, 'Parse error')
-    assert.strictEqual(res.payload.data instanceof Error, true)
+    assert.strictEqual(res.payload.data, '{"id":')
 
     res = jsonrpc.parse('{}')
     assert.strictEqual(res.type, 'invalid')
-    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request'})
+    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request', data: {}})
 
     res = jsonrpc.parse('[]')
     assert.strictEqual(res.type, 'invalid')
-    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request'})
+    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request', data: []})
 
     res = jsonrpc.parse('{"id":123,"method":"update"}')
     assert.strictEqual(res.type, 'invalid')
-    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request'})
+    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request', data: {id: 123, method: 'update'}})
 
     res = jsonrpc.parse('{"jsonrpc":"2.0","method":123}')
     assert.strictEqual(res.type, 'invalid')
-    assert.deepEqual(res.payload, {code: -32601, message: 'Method not found'})
+    assert.deepEqual(res.payload, {code: -32601, message: 'Method not found', data: 123})
 
     res = jsonrpc.parse('{"jsonrpc":"2.0","id":123}')
     assert.strictEqual(res.type, 'invalid')
-    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request'})
+    assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request', data: {jsonrpc: '2.0', id: 123}})
 
     res = jsonrpc.parse('{"jsonrpc":"2.0","method":"123"}')
     assert.strictEqual(res.type, 'notification')
@@ -334,6 +334,6 @@ tman.suite('jsonrpc', function () {
     assert.deepEqual(parsedBatch[3].payload, errorObj)
 
     assert.strictEqual(parsedBatch[4].type, 'invalid')
-    assert.deepEqual(parsedBatch[4].payload, {code: -32600, message: 'Invalid request'})
+    assert.deepEqual(parsedBatch[4].payload, {code: -32600, message: 'Invalid request', data: {}})
   })
 })

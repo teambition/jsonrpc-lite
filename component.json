@@ -2,7 +2,7 @@
   "name": "jsonrpc-lite",
   "description": "Parse and Serialize JSON-RPC2 messages in node.js, io.js or browser.",
   "main": "jsonrpc.js",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "homepage": "https://github.com/teambition/jsonrpc-lite",
   "authors": [
     "Ruben LZ Tan",

@@ -104,16 +104,18 @@
    * @api public
    */
   jsonrpc.parse = function (message) {
-    if (typeof message !== 'string') return new JsonRpcParsed(JsonRpcError.invalidRequest(), 'invalid')
+    if (!message || typeof message !== 'string') {
+      return new JsonRpcParsed(JsonRpcError.invalidRequest(message), 'invalid')
+    }
 
     try {
       message = JSON.parse(message)
     } catch (err) {
-      return new JsonRpcParsed(JsonRpcError.parseError(err), 'invalid')
+      return new JsonRpcParsed(JsonRpcError.parseError(message), 'invalid')
     }
 
     if (!isArray(message)) return parseObject(message)
-    if (!message.length) return new JsonRpcParsed(JsonRpcError.invalidRequest(), 'invalid')
+    if (!message.length) return new JsonRpcParsed(JsonRpcError.invalidRequest(message), 'invalid')
     for (var i = 0, len = message.length; i < len; i++) message[i] = parseObject(message[i])
 
     return message
@@ -227,7 +229,7 @@
     var error = null
     var payload = null
 
-    if (!obj || obj.jsonrpc !== JsonRpc.VERSION) error = JsonRpcError.invalidRequest()
+    if (!obj || obj.jsonrpc !== JsonRpc.VERSION) error = JsonRpcError.invalidRequest(obj)
     else if (!hasOwnProperty.call(obj, 'id')) {
       payload = new NotificationObject(obj.method, obj.params)
       error = validateMessage(payload)
@@ -239,11 +241,11 @@
       error = validateMessage(payload)
     } else if (hasOwnProperty.call(obj, 'error')) {
       if (!obj.error) {
-        error = JsonRpcError.internalError()
+        error = JsonRpcError.internalError(obj)
       } else {
         var err = new JsonRpcError(obj.error.message, obj.error.code, obj.error.data)
         if (err.message !== obj.error.message || err.code !== obj.error.code) {
-          error = JsonRpcError.internalError()
+          error = JsonRpcError.internalError(obj)
         } else {
           payload = new ErrorObject(obj.id, err)
           error = validateMessage(payload)
@@ -252,7 +254,7 @@
     }
 
     if (!error && payload) return new JsonRpcParsed(payload)
-    return new JsonRpcParsed(error || JsonRpcError.invalidRequest(), 'invalid')
+    return new JsonRpcParsed(error || JsonRpcError.invalidRequest(obj), 'invalid')
   }
 
   // if error, return error, else return null
@@ -282,7 +284,7 @@
   }
 
   function checkMethod (method) {
-    return isString(method) ? null : JsonRpcError.methodNotFound()
+    return isString(method) ? null : JsonRpcError.methodNotFound(method)
   }
 
   function checkResult (result) {
@@ -297,10 +299,10 @@
         JSON.stringify(params)
         return null
       } catch (err) {
-        return JsonRpcError.parseError(err)
+        return JsonRpcError.parseError(params)
       }
     }
-    return JsonRpcError.invalidParams()
+    return JsonRpcError.invalidParams(params)
   }
 
   function checkError (error) {
