@@ -1,5 +1,7 @@
 # JSON-RPC lite
-Parse and Serialize JSON-RPC2 messages in node.js or browser. Inspired by https://github.com/soggie/jsonrpc-serializer
+Parse and Serialize JSON-RPC2 messages in node.js or browser.
+
+Inspired by https://github.com/soggie/jsonrpc-serializer
 
 [![NPM version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
@@ -137,6 +139,13 @@ return an array, or an object of this format:
 }]
 ```
 
+### jsonrpc.parseObject(message)
+Takes a JSON-RPC 2.0 payload (Object) and tries to parse it into a JSON. If successful, determine what object is it (response, notification, success, error, or invalid), and return it's type and properly formatted object.
+
+- `message`: {Object}
+
+return an array, or an object same as `jsonrpc.parse`.
+
 ### Class: jsonrpc.JsonRpc()
 
 ### Class: jsonrpc.JsonRpcError(message, code[, data])
@@ -156,10 +165,6 @@ var error = new jsonrpc.JsonRpcError('some error', 999);
 ### Class Method: jsonrpc.JsonRpcError.invalidParams([data])
 ### Class Method: jsonrpc.JsonRpcError.internalError([data])
 ### Class Method: jsonrpc.JsonRpcError.parseError([data])
-
-## Who's using
-
-+ Teambition: https://www.teambition.com/
 
 [npm-url]: https://npmjs.org/package/jsonrpc-lite
 [npm-image]: http://img.shields.io/npm/v/jsonrpc-lite.svg

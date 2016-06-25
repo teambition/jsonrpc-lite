@@ -1,11 +1,10 @@
 {
   "name": "jsonrpc-lite",
-  "description": "Parse and Serialize JSON-RPC2 messages in node.js, io.js or browser.",
+  "description": "Parse and Serialize JSON-RPC2 messages in node.js or browser.",
   "authors": [
-    "Ruben LZ Tan",
     "Yan Qing <admin@zensh.com>"
   ],
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "jsonrpc.js",
   "repository": {
     "type": "git",
@@ -23,8 +22,8 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "standard": "^7.1.1",
-    "tman": "^0.9.8"
+    "standard": "^7.1.2",
+    "tman": "^0.9.9"
   },
   "scripts": {
     "test": "standard && tman"

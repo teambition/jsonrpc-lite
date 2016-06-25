@@ -89,7 +89,7 @@
   }
 
   /**
-   * Takes a JSON-RPC 2.0 payload (string) and tries to parse it into a JSON.
+   * Takes a JSON-RPC 2.0 payload (String) and tries to parse it into a JSON.
    * If successful, determine what object is it (response, notification,
    * success, error, or invalid), and return it's type and properly formatted object.
    *
@@ -114,6 +114,25 @@
       return new JsonRpcParsed(JsonRpcError.parseError(message), 'invalid')
     }
 
+    return jsonrpc.parseObject(message)
+  }
+
+  /**
+   * Takes a JSON-RPC 2.0 payload (Object) and tries to parse it into a JSON.
+   * If successful, determine what object is it (response, notification,
+   * success, error, or invalid), and return it's type and properly formatted object.
+   *
+   * @param  {Object} msg
+   * @return {Object|Array} an array, or an object of this format:
+   *
+   *  {
+   *    type: <Enum, 'request'|'notification'|'success'|'error'|'invalid'>
+   *    payload: <JsonRpc|JsonRpcError>
+   *  }
+   *
+   * @api public
+   */
+  jsonrpc.parseObject = function (message) {
     if (!isArray(message)) return parseObject(message)
     if (!message.length) return new JsonRpcParsed(JsonRpcError.invalidRequest(message), 'invalid')
     for (var i = 0, len = message.length; i < len; i++) message[i] = parseObject(message[i])
