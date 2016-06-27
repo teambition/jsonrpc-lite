@@ -336,4 +336,32 @@ tman.suite('jsonrpc', function () {
     assert.strictEqual(parsedBatch[4].type, 'invalid')
     assert.deepEqual(parsedBatch[4].payload, {code: -32600, message: 'Invalid request', data: {}})
   })
+
+  tman.it('jsonrpc.parse, batch parse', function () {
+    var messages = JSON.stringify([
+      {'jsonrpc': '2.0', 'method': 'sum', 'params': [1, 2, 4], 'id': '1'},
+      {'jsonrpc': '2.0', 'method': 'notify_hello', 'params': [7]},
+      {'jsonrpc': '2.0', 'method': 'subtract', 'params': [42, 23], 'id': '2'},
+      {'jsonrpc': '2.0', 'method': 'foo.get', 'params': {'name': 'myself'}, 'id': '5'},
+      {'jsonrpc': '2.0', 'method': 'get_data', 'id': '9'},
+      {'jsonrpc': '2.0', 'result': 7, 'id': '1'},
+      {'jsonrpc': '2.0', 'result': 19, 'id': '2'},
+      {'jsonrpc': '2.0', 'error': {'code': -32600, 'message': 'Invalid Request'}, 'id': null},
+      {'jsonrpc': '2.0', 'error': {'code': -32600, 'message': 'Invalid Request'}, 'id': {}},
+      {'jsonrpc': '2.0', 'result': ['hello', 5], 'id': '9'}
+    ])
+
+    var res = jsonrpc.parse(messages)
+    assert.strictEqual(res.length, 10)
+    assert.strictEqual(res[0].type, 'request')
+    assert.strictEqual(res[1].type, 'notification')
+    assert.strictEqual(res[2].type, 'request')
+    assert.strictEqual(res[3].type, 'request')
+    assert.strictEqual(res[4].type, 'request')
+    assert.strictEqual(res[5].type, 'success')
+    assert.strictEqual(res[6].type, 'success')
+    assert.strictEqual(res[7].type, 'error')
+    assert.strictEqual(res[8].type, 'invalid')
+    assert.strictEqual(res[9].type, 'success')
+  })
 })

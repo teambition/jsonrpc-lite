@@ -114,7 +114,13 @@
       return new JsonRpcParsed(JsonRpcError.parseError(message), 'invalid')
     }
 
-    return jsonrpc.parseObject(message)
+    if (!isArray(message)) return parseObject(message)
+    if (!message.length) return new JsonRpcParsed(JsonRpcError.invalidRequest(message), 'invalid')
+    for (var i = 0, len = message.length; i < len; i++) {
+      message[i] = parseObject(message[i])
+    }
+
+    return message
   }
 
   /**
@@ -132,12 +138,37 @@
    *
    * @api public
    */
-  jsonrpc.parseObject = function (message) {
-    if (!isArray(message)) return parseObject(message)
-    if (!message.length) return new JsonRpcParsed(JsonRpcError.invalidRequest(message), 'invalid')
-    for (var i = 0, len = message.length; i < len; i++) message[i] = parseObject(message[i])
+  jsonrpc.parseObject = parseObject
+  function parseObject (obj) {
+    var error = null
+    var payload = null
 
-    return message
+    if (!obj || obj.jsonrpc !== JsonRpc.VERSION) error = JsonRpcError.invalidRequest(obj)
+    else if (!hasOwnProperty.call(obj, 'id')) {
+      payload = new NotificationObject(obj.method, obj.params)
+      error = validateMessage(payload)
+    } else if (hasOwnProperty.call(obj, 'method')) {
+      payload = new RequestObject(obj.id, obj.method, obj.params)
+      error = validateMessage(payload)
+    } else if (hasOwnProperty.call(obj, 'result')) {
+      payload = new SuccessObject(obj.id, obj.result)
+      error = validateMessage(payload)
+    } else if (hasOwnProperty.call(obj, 'error')) {
+      if (!obj.error) {
+        error = JsonRpcError.internalError(obj)
+      } else {
+        var err = new JsonRpcError(obj.error.message, obj.error.code, obj.error.data)
+        if (err.message !== obj.error.message || err.code !== obj.error.code) {
+          error = JsonRpcError.internalError(obj)
+        } else {
+          payload = new ErrorObject(obj.id, err)
+          error = validateMessage(payload)
+        }
+      }
+    }
+
+    if (!error && payload) return new JsonRpcParsed(payload)
+    return new JsonRpcParsed(error || JsonRpcError.invalidRequest(obj), 'invalid')
   }
 
   /**
@@ -242,38 +273,6 @@
 
   JsonRpcError.parseError = function (data) {
     return new JsonRpcError('Parse error', -32700, data)
-  }
-
-  function parseObject (obj) {
-    var error = null
-    var payload = null
-
-    if (!obj || obj.jsonrpc !== JsonRpc.VERSION) error = JsonRpcError.invalidRequest(obj)
-    else if (!hasOwnProperty.call(obj, 'id')) {
-      payload = new NotificationObject(obj.method, obj.params)
-      error = validateMessage(payload)
-    } else if (hasOwnProperty.call(obj, 'method')) {
-      payload = new RequestObject(obj.id, obj.method, obj.params)
-      error = validateMessage(payload)
-    } else if (hasOwnProperty.call(obj, 'result')) {
-      payload = new SuccessObject(obj.id, obj.result)
-      error = validateMessage(payload)
-    } else if (hasOwnProperty.call(obj, 'error')) {
-      if (!obj.error) {
-        error = JsonRpcError.internalError(obj)
-      } else {
-        var err = new JsonRpcError(obj.error.message, obj.error.code, obj.error.data)
-        if (err.message !== obj.error.message || err.code !== obj.error.code) {
-          error = JsonRpcError.internalError(obj)
-        } else {
-          payload = new ErrorObject(obj.id, err)
-          error = validateMessage(payload)
-        }
-      }
-    }
-
-    if (!error && payload) return new JsonRpcParsed(payload)
-    return new JsonRpcParsed(error || JsonRpcError.invalidRequest(obj), 'invalid')
   }
 
   // if error, return error, else return null
