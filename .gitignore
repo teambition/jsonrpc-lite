@@ -4,3 +4,4 @@ test.js
 
 npm-debug.log
 .DS_Store
+.esm-cache
