@@ -342,4 +342,5 @@ function isObject (obj) {
   return obj && typeof obj === 'object' && !isArray(obj)
 }
 
-export { JsonRpc, JsonRpcError, jsonrpc as default }
+export default jsonrpc
+export { JsonRpc, JsonRpcError, jsonrpc }
