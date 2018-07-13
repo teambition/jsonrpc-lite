@@ -24,6 +24,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "@std/esm": "^0.26.0",
     "@types/node": "^10.5.2",
     "tman": "^1.7.4",
     "ts-node": "^7.0.0",
@@ -33,7 +34,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": " tman -r ts-node/register test/*.ts"
+    "test": " tman"
   },
   "files": [
     "README.md",

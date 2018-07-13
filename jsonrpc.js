@@ -13,6 +13,9 @@ var JsonRpc = /** @class */ (function () {
     function JsonRpc() {
         this.jsonrpc = "2.0";
     }
+    JsonRpc.serialize = function () {
+        return JSON.stringify(this);
+    };
     JsonRpc.VERSION = "2.0";
     return JsonRpc;
 }());
@@ -26,7 +29,6 @@ var RequestObject = /** @class */ (function (_super) {
         if (params !== undef) {
             _this.params = params;
         }
-        ;
         return _this;
     }
     return RequestObject;
@@ -39,7 +41,6 @@ var NotificationObject = /** @class */ (function (_super) {
         if (params !== undef) {
             _this.params = params;
         }
-        ;
         return _this;
     }
     return NotificationObject;
@@ -102,17 +103,16 @@ var JsonRpcParsed = /** @class */ (function () {
  */
 var JsonRpcError = /** @class */ (function () {
     function JsonRpcError(message, code, data) {
-        // super(message);
+        // super(message)
         // workaround
         // https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md \
         // #extending-built-ins-like-error-array-and-map-may-no-longer-work
-        // Object.setPrototypeOf(this, JsonRpcError.prototype);
+        // Object.setPrototypeOf(this, JsonRpcError.prototype)
         this.message = message;
         this.code = isInteger(code) ? code : 0;
         if (data !== undef && data !== null) {
             this.data = data;
         }
-        ;
     }
     JsonRpcError.invalidRequest = function (data) {
         return new JsonRpcError("Invalid request", -32600, data);
@@ -132,7 +132,7 @@ var JsonRpcError = /** @class */ (function () {
     return JsonRpcError;
 }());
 exports.JsonRpcError = JsonRpcError;
-// JsonRpcError.prototype.name = "JsonRpcError";
+// JsonRpcError.prototype.name = "JsonRpcError"
 /**
  * Creates a JSON-RPC 2.0 request object
  *
@@ -148,7 +148,6 @@ function request(id, method, params) {
     return object;
 }
 exports.request = request;
-;
 /**
  * Creates a JSON-RPC 2.0 notification object
  *
@@ -163,7 +162,6 @@ function notification(method, params) {
     return object;
 }
 exports.notification = notification;
-;
 /**
  * Creates a JSON-RPC 2.0 success response object
  *
@@ -178,7 +176,6 @@ function success(id, result) {
     return object;
 }
 exports.success = success;
-;
 /**
  * Creates a JSON-RPC 2.0 error response object
  *
@@ -193,7 +190,6 @@ function error(id, err) {
     return object;
 }
 exports.error = error;
-;
 function parse(message) {
     if (!message || typeof message !== "string") {
         return new JsonRpcParsed(JsonRpcError.invalidRequest(message), RpcStatusType.invalid);
@@ -218,7 +214,6 @@ function parse(message) {
     return parsedObjectArray;
 }
 exports.parse = parse;
-;
 /**
  * Takes a JSON-RPC 2.0 payload (Object) and tries to parse it into a JSON.
  * If successful, determine what object is it (response, notification,
@@ -284,7 +279,6 @@ function parseObject(obj) {
     return new JsonRpcParsed(err || JsonRpcError.invalidRequest(obj), RpcStatusType.invalid);
 }
 exports.parseObject = parseObject;
-;
 // if error, return error, else return null
 function validateMessage(obj, throwIt) {
     var err = null;
@@ -310,7 +304,6 @@ function checkId(id, maybeNull) {
     if (maybeNull && id === null) {
         return null;
     }
-    ;
     return isString(id) || isInteger(id)
         ? null
         : JsonRpcError.internalError('"id" must be provided, a string or an integer.');
@@ -327,7 +320,6 @@ function checkParams(params) {
     if (params === undefined) {
         return null;
     }
-    ;
     if (Array.isArray(params) || isObject(params)) {
         // ensure params can be stringify
         try {
