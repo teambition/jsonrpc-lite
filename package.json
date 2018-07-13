@@ -26,7 +26,8 @@
   "devDependencies": {
     "@std/esm": "^0.26.0",
     "standard": "^11.0.1",
-    "tman": "^1.7.4"
+    "tman": "^1.7.4",
+    "typescript": "^2.9.2"
   },
   "scripts": {
     "test": "standard && tman"

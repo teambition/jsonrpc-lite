@@ -1,6 +1,7 @@
 node_modules/
 debug/
 test.js
+.vscode
 
 npm-debug.log
 .DS_Store
