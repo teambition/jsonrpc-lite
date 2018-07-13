@@ -1,13 +1,16 @@
 'use strict'
 
+// tslint:disable-next-line
 const assert = require('assert')
+// tslint:disable-next-line
 const tman = require('tman')
 
-// test(require('../jsonrpc'))
+// test(require('.'))
 // require('@std/esm')
 // test(require('@std/esm')(module)('../jsonrpc.mjs').default)
-test(require('../jsonrpc.js').default)
-function test (jsonrpc) {
+// tslint:disable-next-line
+test(require('../jsonrpc.ts').default)
+function test (jsonrpc: any) {
   tman.suite('jsonrpc', function () {
     tman.it('jsonrpc.request', function () {
       assert.throws(function () {
@@ -36,25 +39,25 @@ function test (jsonrpc) {
 
       assert.strictEqual(JSON.stringify(jsonrpc.request(123, 'update')), '{"jsonrpc":"2.0","id":123,"method":"update"}')
       assert.strictEqual(jsonrpc.request(123, 'update') instanceof jsonrpc.JsonRpc, true)
-      // assert.strictEqual(jsonrpc.request(123, 'update').name, 'request')
+    //   assert.strictEqual(jsonrpc.request(123, 'update').name, 'request')
       assert.deepEqual(jsonrpc.request(123, 'update'), {
         jsonrpc: '2.0',
         id: 123,
-        method: 'update'
+        method: 'update',
       })
 
       assert.deepEqual(jsonrpc.request('123', 'update', []), {
         jsonrpc: '2.0',
         id: '123',
         method: 'update',
-        params: []
+        params: [],
       })
 
       assert.deepEqual(jsonrpc.request('123', 'update', {list: []}), {
         jsonrpc: '2.0',
         id: '123',
         method: 'update',
-        params: {list: []}
+        params: {list: []},
       })
     })
 
@@ -77,22 +80,22 @@ function test (jsonrpc) {
 
       assert.strictEqual(JSON.stringify(jsonrpc.notification('update')), '{"jsonrpc":"2.0","method":"update"}')
       assert.strictEqual(jsonrpc.notification('update') instanceof jsonrpc.JsonRpc, true)
-      // assert.strictEqual(jsonrpc.notification('update').name, 'notification')
+    //   assert.strictEqual(jsonrpc.notification('update').name, 'notification')
       assert.deepEqual(jsonrpc.notification('update'), {
         jsonrpc: '2.0',
-        method: 'update'
+        method: 'update',
       })
 
       assert.deepEqual(jsonrpc.notification('update', []), {
         jsonrpc: '2.0',
         method: 'update',
-        params: []
+        params: [],
       })
 
       assert.deepEqual(jsonrpc.notification('update', {list: []}), {
         jsonrpc: '2.0',
         method: 'update',
-        params: {list: []}
+        params: {list: []},
       })
     })
 
@@ -107,17 +110,17 @@ function test (jsonrpc) {
 
       assert.strictEqual(JSON.stringify(jsonrpc.success(123, null)), '{"jsonrpc":"2.0","id":123,"result":null}')
       assert.strictEqual(jsonrpc.success('123', 'OK') instanceof jsonrpc.JsonRpc, true)
-      // assert.strictEqual(jsonrpc.success('123', 'OK').name, 'success')
+    //   assert.strictEqual(jsonrpc.success('123', 'OK').name, 'success')
       assert.deepEqual(jsonrpc.success('123', 'OK'), {
         jsonrpc: '2.0',
         id: '123',
-        result: 'OK'
+        result: 'OK',
       })
 
       assert.deepEqual(jsonrpc.success(123, []), {
         jsonrpc: '2.0',
         id: 123,
-        result: []
+        result: [],
       })
     })
 
@@ -135,58 +138,59 @@ function test (jsonrpc) {
       }, jsonrpc.JsonRpcError)
 
       assert.throws(function () {
-        jsonrpc.error(123, new Error('test', 1))
+        jsonrpc.error(123, new Error('test'))
       }, jsonrpc.JsonRpcError)
 
-      assert.strictEqual(JSON.stringify(jsonrpc.error(null, new jsonrpc.JsonRpcError('test', 1))), '{"jsonrpc":"2.0","id":null,"error":{"message":"test","code":1}}')
+      assert.strictEqual(JSON.stringify(jsonrpc.error(null, new jsonrpc.JsonRpcError('test', 1))),
+      '{"jsonrpc":"2.0","id":null,"error":{"message":"test","code":1}}')
       assert.strictEqual(jsonrpc.error('123', new jsonrpc.JsonRpcError('test', 1)) instanceof jsonrpc.JsonRpc, true)
-      // assert.strictEqual(jsonrpc.error('123', new jsonrpc.JsonRpcError('test', 1)).name, 'error')
+    //   assert.strictEqual(jsonrpc.error('123', new jsonrpc.JsonRpcError('test', 1)).name, 'error')
 
       assert.deepEqual(jsonrpc.error(null, new jsonrpc.JsonRpcError('test', 1)), {
         jsonrpc: '2.0',
         id: null,
-        error: {code: 1, message: 'test'}
+        error: {code: 1, message: 'test'},
       })
 
       assert.deepEqual(jsonrpc.error('123', new jsonrpc.JsonRpcError('test', 99, 'test error')), {
         jsonrpc: '2.0',
         id: '123',
-        error: {code: 99, message: 'test', data: 'test error'}
+        error: {code: 99, message: 'test', data: 'test error'},
       })
 
       assert.deepEqual(jsonrpc.error(123, jsonrpc.JsonRpcError.invalidRequest()), {
         jsonrpc: '2.0',
         id: 123,
-        error: {code: -32600, message: 'Invalid request'}
+        error: {code: -32600, message: 'Invalid request'},
       })
 
       assert.deepEqual(jsonrpc.error(123, jsonrpc.JsonRpcError.methodNotFound()), {
         jsonrpc: '2.0',
         id: 123,
-        error: {code: -32601, message: 'Method not found'}
+        error: {code: -32601, message: 'Method not found'},
       })
 
       assert.deepEqual(jsonrpc.error(123, jsonrpc.JsonRpcError.invalidParams()), {
         jsonrpc: '2.0',
         id: 123,
-        error: {code: -32602, message: 'Invalid params'}
+        error: {code: -32602, message: 'Invalid params'},
       })
 
       assert.deepEqual(jsonrpc.error(123, jsonrpc.JsonRpcError.internalError()), {
         jsonrpc: '2.0',
         id: 123,
-        error: {code: -32603, message: 'Internal error'}
+        error: {code: -32603, message: 'Internal error'},
       })
 
       assert.deepEqual(jsonrpc.error(123, jsonrpc.JsonRpcError.parseError()), {
         jsonrpc: '2.0',
         id: 123,
-        error: {code: -32700, message: 'Parse error'}
+        error: {code: -32700, message: 'Parse error'},
       })
     })
 
     tman.it('jsonrpc.parse', function () {
-      var res = null
+      let res = null
 
       res = jsonrpc.parse(1)
       assert.strictEqual(res.type, 'invalid')
@@ -225,10 +229,10 @@ function test (jsonrpc) {
       res = jsonrpc.parse('{"jsonrpc":"2.0","method":"123"}')
       assert.strictEqual(res.type, 'notification')
       assert.strictEqual(res.payload instanceof jsonrpc.JsonRpc, true)
-      // assert.strictEqual(res.payload.name, 'notification')
+    //   assert.strictEqual(res.payload.name, 'notification')
       assert.deepEqual(res.payload, {
         jsonrpc: '2.0',
-        method: '123'
+        method: '123',
       })
 
       res = jsonrpc.parse('{"jsonrpc":"2.0","method":"update","params":null}')
@@ -241,7 +245,7 @@ function test (jsonrpc) {
       assert.deepEqual(res.payload, {
         jsonrpc: '2.0',
         method: 'update',
-        params: []
+        params: [],
       })
 
       res = jsonrpc.parse('{"jsonrpc":"2.0","id":null,"method":123}')
@@ -258,32 +262,32 @@ function test (jsonrpc) {
       res = jsonrpc.parse('{"jsonrpc":"2.0","id":123,"method":"update"}')
       assert.strictEqual(res.type, 'request')
       assert.strictEqual(res.payload instanceof jsonrpc.JsonRpc, true)
-      // assert.strictEqual(res.payload.name, 'request')
+    //   assert.strictEqual(res.payload.name, 'request')
       assert.deepEqual(res.payload, {
         jsonrpc: '2.0',
         id: 123,
-        method: 'update'
+        method: 'update',
       })
 
       res = jsonrpc.parse('{"jsonrpc":"2.0","id":123,"method":"update","params":{}}')
       assert.strictEqual(res.type, 'request')
       assert.strictEqual(res.payload instanceof jsonrpc.JsonRpc, true)
-      // assert.strictEqual(res.payload.name, 'request')
+    //   assert.strictEqual(res.payload.name, 'request')
       assert.deepEqual(res.payload, {
         jsonrpc: '2.0',
         id: 123,
         method: 'update',
-        params: {}
+        params: {},
       })
 
       res = jsonrpc.parse('{"jsonrpc":"2.0","id":123,"result":null}')
       assert.strictEqual(res.type, 'success')
       assert.strictEqual(res.payload instanceof jsonrpc.JsonRpc, true)
-      // assert.strictEqual(res.payload.name, 'success')
+    //   assert.strictEqual(res.payload.name, 'success')
       assert.deepEqual(res.payload, {
         jsonrpc: '2.0',
         id: 123,
-        result: null
+        result: null,
       })
 
       res = jsonrpc.parse('{"jsonrpc":"2.0","id":123,"error":123}')
@@ -304,26 +308,26 @@ function test (jsonrpc) {
       res = jsonrpc.parse('{"jsonrpc":"2.0","id":123,"error":{"code":123,"message":"test"}}')
       assert.strictEqual(res.type, 'error')
       assert.strictEqual(res.payload instanceof jsonrpc.JsonRpc, true)
-      // assert.strictEqual(res.payload.name, 'error')
+    //   assert.strictEqual(res.payload.name, 'error')
       assert.deepEqual(res.payload, {
         jsonrpc: '2.0',
         id: 123,
-        error: {code: 123, message: 'test'}
+        error: {code: 123, message: 'test'},
       })
 
-      var requestObj = jsonrpc.request('123', 'update', {list: []})
+      const requestObj = jsonrpc.request('123', 'update', {list: []})
       assert.deepEqual(jsonrpc.parse(JSON.stringify(requestObj)).payload, requestObj)
 
-      var notificationObj = jsonrpc.notification('update', {list: []})
+      const notificationObj = jsonrpc.notification('update', {list: []})
       assert.deepEqual(jsonrpc.parse(JSON.stringify(notificationObj)).payload, notificationObj)
 
-      var successObj = jsonrpc.success('123', 'OK')
+      const successObj = jsonrpc.success('123', 'OK')
       assert.deepEqual(jsonrpc.parse(JSON.stringify(successObj)).payload, successObj)
 
-      var errorObj = jsonrpc.error('123', jsonrpc.JsonRpcError.parseError())
+      const errorObj = jsonrpc.error('123', jsonrpc.JsonRpcError.parseError())
       assert.deepEqual(jsonrpc.parse(JSON.stringify(errorObj)).payload, errorObj)
 
-      var parsedBatch = jsonrpc.parse(JSON.stringify([requestObj, notificationObj, successObj, errorObj, {}]))
+      const parsedBatch = jsonrpc.parse(JSON.stringify([requestObj, notificationObj, successObj, errorObj, {}]))
 
       assert.strictEqual(parsedBatch[0].type, 'request')
       assert.deepEqual(parsedBatch[0].payload, requestObj)
@@ -342,20 +346,20 @@ function test (jsonrpc) {
     })
 
     tman.it('jsonrpc.parse, batch parse', function () {
-      var messages = JSON.stringify([
-        {'jsonrpc': '2.0', 'method': 'sum', 'params': [1, 2, 4], 'id': '1'},
-        {'jsonrpc': '2.0', 'method': 'notify_hello', 'params': [7]},
-        {'jsonrpc': '2.0', 'method': 'subtract', 'params': [42, 23], 'id': '2'},
-        {'jsonrpc': '2.0', 'method': 'foo.get', 'params': {'name': 'myself'}, 'id': '5'},
-        {'jsonrpc': '2.0', 'method': 'get_data', 'id': '9'},
-        {'jsonrpc': '2.0', 'result': 7, 'id': '1'},
-        {'jsonrpc': '2.0', 'result': 19, 'id': '2'},
-        {'jsonrpc': '2.0', 'error': {'code': -32600, 'message': 'Invalid Request'}, 'id': null},
-        {'jsonrpc': '2.0', 'error': {'code': -32600, 'message': 'Invalid Request'}, 'id': {}},
-        {'jsonrpc': '2.0', 'result': ['hello', 5], 'id': '9'}
+      const messages = JSON.stringify([
+        {jsonrpc: '2.0', method: 'sum', params: [1, 2, 4], id: '1'},
+        {jsonrpc: '2.0', method: 'notify_hello', params: [7]},
+        {jsonrpc: '2.0', method: 'subtract', params: [42, 23], id: '2'},
+        {jsonrpc: '2.0', method: 'foo.get', params: {name: 'myself'}, id: '5'},
+        {jsonrpc: '2.0', method: 'get_data', id: '9'},
+        {jsonrpc: '2.0', result: 7, id: '1'},
+        {jsonrpc: '2.0', result: 19, id: '2'},
+        {jsonrpc: '2.0', error: {code: -32600, message: 'Invalid Request'}, id: null},
+        {jsonrpc: '2.0', error: {code: -32600, message: 'Invalid Request'}, id: {}},
+        {jsonrpc: '2.0', result: ['hello', 5], id: '9'},
       ])
 
-      var res = jsonrpc.parse(messages)
+      const res = jsonrpc.parse(messages)
       assert.strictEqual(res.length, 10)
       assert.strictEqual(res[0].type, 'request')
       assert.strictEqual(res[1].type, 'notification')
