@@ -23,11 +23,15 @@ interface IJsonRpcType {
 }
 class JsonRpc implements IJsonRpcType {
   static VERSION: string = "2.0";
+  static serialize () {
+    return JSON.stringify(this)
+  }
   readonly jsonrpc: string;
 
   constructor () {
     this.jsonrpc = "2.0";
   }
+
 }
 
 class RequestObject extends JsonRpc {
