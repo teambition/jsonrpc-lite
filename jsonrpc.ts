@@ -2,13 +2,12 @@
 //
 // http://www.jsonrpc.org/specification
 // **License:** MIT
-"use strict"
+'use strict'
 
 type ID = number | string
-type RpcParams = string | number | null | boolean | object | any[]
 type defined = string | number | boolean | null | object
+type RpcParams = defined | defined[]
 
-const undef = void 0
 const isInteger: (num: number) => boolean = Number.isSafeInteger || function (num) {
   return num === Math.floor(num) && Math.abs(num) <= 9007199254740991
 }
@@ -23,14 +22,14 @@ interface IJsonRpcType {
   readonly jsonrpc: string
 }
 class JsonRpc implements IJsonRpcType {
-  static VERSION: string = "2.0"
+  static VERSION: string = '2.0'
   static serialize () {
     return JSON.stringify(this)
   }
   readonly jsonrpc: string
 
   constructor () {
-    this.jsonrpc = "2.0"
+    this.jsonrpc = '2.0'
   }
 
 }
@@ -41,10 +40,9 @@ class RequestObject extends JsonRpc {
   public params?: RpcParams
   constructor (id: ID, method: string, params?: RpcParams) {
     super()
-
     this.id = id
     this.method = method
-    if (params !== undef ) {
+    if (params !== undefined ) {
       this.params = params
     }
   }
@@ -55,9 +53,8 @@ class NotificationObject extends JsonRpc {
   public params?: RpcParams
   constructor (method: string, params?: RpcParams) {
     super()
-
     this.method = method
-    if (params !== undef ) {
+    if (params !== undefined ) {
       this.params = params
     }
   }
@@ -90,11 +87,11 @@ class ErrorObject extends JsonRpc {
  * @api public
  */
 enum RpcStatusType {
-  request = "request",
-  notification = "notification",
-  success = "success",
-  error = "error",
-  invalid = "invalid",
+  request = 'request',
+  notification = 'notification',
+  success = 'success',
+  error = 'error',
+  invalid = 'invalid',
 }
 class JsonRpcParsed {
   constructor (
@@ -102,7 +99,6 @@ class JsonRpcParsed {
     public type: RpcStatusType,
   ) {
     this.payload = payload
-    // FIXME
     this.type = type
   }
 }
@@ -117,43 +113,36 @@ class JsonRpcParsed {
  */
 class JsonRpcError {
   static invalidRequest = function (data: any): JsonRpcError {
-    return new JsonRpcError("Invalid request", -32600, data)
+    return new JsonRpcError('Invalid request', -32600, data)
   }
 
   static methodNotFound = function (data: any): JsonRpcError {
-    return new JsonRpcError("Method not found", -32601, data)
+    return new JsonRpcError('Method not found', -32601, data)
   }
 
   static invalidParams = function (data: any): JsonRpcError {
-    return new JsonRpcError("Invalid params", -32602, data)
+    return new JsonRpcError('Invalid params', -32602, data)
   }
 
   static internalError = function (data: any): JsonRpcError {
-    return new JsonRpcError("Internal error", -32603, data)
+    return new JsonRpcError('Internal error', -32603, data)
   }
 
   static parseError = function (data: any): JsonRpcError {
-    return new JsonRpcError("Parse error", -32700, data)
+    return new JsonRpcError('Parse error', -32700, data)
   }
 
   public message: string
   public code: number
   public data?: any
   constructor (message: string, code: number, data?: any) {
-    // super(message)
-    // workaround
-    // https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md \
-    // #extending-built-ins-like-error-array-and-map-may-no-longer-work
-    // Object.setPrototypeOf(this, JsonRpcError.prototype)
-
     this.message = message
     this.code = isInteger(code) ? code : 0
-    if (data !== undef && data !== null ) {
+    if (data != null ) {
       this.data = data
     }
   }
 }
-// JsonRpcError.prototype.name = "JsonRpcError"
 
 /**
  * Creates a JSON-RPC 2.0 request object
@@ -241,7 +230,7 @@ interface IParsedObject {
 export function parse (
   message: string,
 ): IParsedObject | IParsedObject[] {
-  if (!message || typeof message !== "string") {
+  if (!message || typeof message !== 'string') {
     return new JsonRpcParsed(
       JsonRpcError.invalidRequest(message),
       RpcStatusType.invalid,
@@ -333,8 +322,9 @@ export function parseObject (obj: JsonRpc): IParsedObject {
       }
     }
   }
-  // TODO FIXME
-  if (!err && payload) { return new JsonRpcParsed(payload, payloadType) }
+  if (!err && payload) {
+    return new JsonRpcParsed(payload, payloadType)
+  }
   return new JsonRpcParsed(
     err || JsonRpcError.invalidRequest(obj),
     RpcStatusType.invalid,
@@ -361,7 +351,9 @@ function validateMessage (obj: JsonRpc, throwIt?: boolean): JsonRpcError | null 
 type JsonRpcErrorOrNot = JsonRpcError | null
 
 function checkId (id: ID, maybeNull?: boolean): JsonRpcErrorOrNot {
-  if (maybeNull && id === null) { return null }
+  if (maybeNull && id === null) {
+    return null
+   }
   return isString(id) || isInteger(id as number)
     ? null
     : JsonRpcError.internalError(
@@ -376,7 +368,7 @@ function checkMethod (method: string): JsonRpcErrorOrNot {
 function checkResult (result: defined): JsonRpcErrorOrNot {
   return result === void 0
     ? JsonRpcError.internalError(
-        "Result must exist for success Response objects",
+        'Result must exist for success Response objects',
       )
     : null
 }
@@ -400,19 +392,19 @@ function checkParams (params?: RpcParams): JsonRpcErrorOrNot {
 function checkError (err: JsonRpcError): JsonRpcErrorOrNot {
   if (!(err instanceof JsonRpcError)) {
     return JsonRpcError.internalError(
-      "Error must be an instance of JsonRpcError",
+      'Error must be an instance of JsonRpcError',
     )
   }
 
   if (!isInteger(err.code)) {
     return JsonRpcError.internalError(
-      "Invalid error code. It must be an integer.",
+      'Invalid error code. It must be an integer.',
     )
   }
 
   if (!isString(err.message)) {
     return JsonRpcError.internalError(
-      "Message must exist or must be a string.",
+      'Message must exist or must be a string.',
     )
   }
 
@@ -420,11 +412,11 @@ function checkError (err: JsonRpcError): JsonRpcErrorOrNot {
 }
 
 function isString (obj: any): boolean {
-  return obj && typeof obj === "string"
+  return obj && typeof obj === 'string'
 }
 
 function isObject (obj: any): boolean {
-  return obj && typeof obj === "object" && !Array.isArray(obj)
+  return obj && typeof obj === 'object' && !Array.isArray(obj)
 }
 
 const jsonrpc = {

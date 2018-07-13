@@ -1,6 +1,6 @@
 declare type ID = number | string;
-declare type RpcParams = string | number | null | boolean | object | any[];
 declare type defined = string | number | boolean | null | object;
+declare type RpcParams = defined | defined[];
 /**
  * JsonRpc Class
  *

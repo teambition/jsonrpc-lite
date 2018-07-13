@@ -2,21 +2,20 @@
 //
 // http://www.jsonrpc.org/specification
 // **License:** MIT
-"use strict";
+'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var undef = void 0;
 var isInteger = Number.isSafeInteger || function (num) {
     return num === Math.floor(num) && Math.abs(num) <= 9007199254740991;
 };
 var JsonRpc = /** @class */ (function () {
     function JsonRpc() {
-        this.jsonrpc = "2.0";
+        this.jsonrpc = '2.0';
     }
     JsonRpc.serialize = function () {
         return JSON.stringify(this);
     };
-    JsonRpc.VERSION = "2.0";
+    JsonRpc.VERSION = '2.0';
     return JsonRpc;
 }());
 exports.JsonRpc = JsonRpc;
@@ -26,7 +25,7 @@ var RequestObject = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this.id = id;
         _this.method = method;
-        if (params !== undef) {
+        if (params !== undefined) {
             _this.params = params;
         }
         return _this;
@@ -38,7 +37,7 @@ var NotificationObject = /** @class */ (function (_super) {
     function NotificationObject(method, params) {
         var _this = _super.call(this) || this;
         _this.method = method;
-        if (params !== undef) {
+        if (params !== undefined) {
             _this.params = params;
         }
         return _this;
@@ -88,7 +87,6 @@ var JsonRpcParsed = /** @class */ (function () {
         this.payload = payload;
         this.type = type;
         this.payload = payload;
-        // FIXME
         this.type = type;
     }
     return JsonRpcParsed;
@@ -103,36 +101,30 @@ var JsonRpcParsed = /** @class */ (function () {
  */
 var JsonRpcError = /** @class */ (function () {
     function JsonRpcError(message, code, data) {
-        // super(message)
-        // workaround
-        // https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md \
-        // #extending-built-ins-like-error-array-and-map-may-no-longer-work
-        // Object.setPrototypeOf(this, JsonRpcError.prototype)
         this.message = message;
         this.code = isInteger(code) ? code : 0;
-        if (data !== undef && data !== null) {
+        if (data != null) {
             this.data = data;
         }
     }
     JsonRpcError.invalidRequest = function (data) {
-        return new JsonRpcError("Invalid request", -32600, data);
+        return new JsonRpcError('Invalid request', -32600, data);
     };
     JsonRpcError.methodNotFound = function (data) {
-        return new JsonRpcError("Method not found", -32601, data);
+        return new JsonRpcError('Method not found', -32601, data);
     };
     JsonRpcError.invalidParams = function (data) {
-        return new JsonRpcError("Invalid params", -32602, data);
+        return new JsonRpcError('Invalid params', -32602, data);
     };
     JsonRpcError.internalError = function (data) {
-        return new JsonRpcError("Internal error", -32603, data);
+        return new JsonRpcError('Internal error', -32603, data);
     };
     JsonRpcError.parseError = function (data) {
-        return new JsonRpcError("Parse error", -32700, data);
+        return new JsonRpcError('Parse error', -32700, data);
     };
     return JsonRpcError;
 }());
 exports.JsonRpcError = JsonRpcError;
-// JsonRpcError.prototype.name = "JsonRpcError"
 /**
  * Creates a JSON-RPC 2.0 request object
  *
@@ -191,7 +183,7 @@ function error(id, err) {
 }
 exports.error = error;
 function parse(message) {
-    if (!message || typeof message !== "string") {
+    if (!message || typeof message !== 'string') {
         return new JsonRpcParsed(JsonRpcError.invalidRequest(message), RpcStatusType.invalid);
     }
     var jsonrpcObj;
@@ -272,7 +264,6 @@ function parseObject(obj) {
             }
         }
     }
-    // TODO FIXME
     if (!err && payload) {
         return new JsonRpcParsed(payload, payloadType);
     }
@@ -313,7 +304,7 @@ function checkMethod(method) {
 }
 function checkResult(result) {
     return result === void 0
-        ? JsonRpcError.internalError("Result must exist for success Response objects")
+        ? JsonRpcError.internalError('Result must exist for success Response objects')
         : null;
 }
 function checkParams(params) {
@@ -334,21 +325,21 @@ function checkParams(params) {
 }
 function checkError(err) {
     if (!(err instanceof JsonRpcError)) {
-        return JsonRpcError.internalError("Error must be an instance of JsonRpcError");
+        return JsonRpcError.internalError('Error must be an instance of JsonRpcError');
     }
     if (!isInteger(err.code)) {
-        return JsonRpcError.internalError("Invalid error code. It must be an integer.");
+        return JsonRpcError.internalError('Invalid error code. It must be an integer.');
     }
     if (!isString(err.message)) {
-        return JsonRpcError.internalError("Message must exist or must be a string.");
+        return JsonRpcError.internalError('Message must exist or must be a string.');
     }
     return null;
 }
 function isString(obj) {
-    return obj && typeof obj === "string";
+    return obj && typeof obj === 'string';
 }
 function isObject(obj) {
-    return obj && typeof obj === "object" && !Array.isArray(obj);
+    return obj && typeof obj === 'object' && !Array.isArray(obj);
 }
 var jsonrpc = {
     JsonRpc: JsonRpc,
