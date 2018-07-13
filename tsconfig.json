@@ -1,0 +1,36 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+      "target": "es5",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "outDir": ".",
+      "typeRoots": [
+        "node_modules/@types"
+      ],
+      "lib": [
+        "es2018"
+      ],
+      "sourceMap": true,
+      "declaration": true,
+      "importHelpers": true,
+      "newLine": "LF",
+      "skipLibCheck": true,
+      "noEmitHelpers": true,
+      "noImplicitReturns": false,
+      "strict": true,
+      "strictNullChecks": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true
+    },
+    "include": [
+      "./*.ts"
+    ],
+    "exclude": [
+      "node_modules",
+      "build",
+      "test"
+    ]
+  }

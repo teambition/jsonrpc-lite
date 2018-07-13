@@ -25,15 +25,22 @@
   "dependencies": {},
   "devDependencies": {
     "@std/esm": "^0.26.0",
-    "standard": "^11.0.1",
-    "tman": "^1.7.4"
+    "@types/node": "^10.5.2",
+    "tman": "^1.7.4",
+    "ts-node": "^7.0.0",
+    "tslint": "^5.10.0",
+    "tslint-eslint-rules": "^5.3.1",
+    "typescript": "^2.9.2"
   },
   "scripts": {
-    "test": "standard && tman"
+    "build": "tsc",
+    "test": " tman"
   },
   "files": [
     "README.md",
     "jsonrpc.js",
-    "jsonrpc.mjs"
+    "jsonrpc.mjs",
+    "jsonrpc.d.ts",
+    "jsonrpc.js.map"
   ]
 }
