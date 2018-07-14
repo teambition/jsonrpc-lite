@@ -4,15 +4,9 @@
 // **License:** MIT
 'use strict'
 
-const undef = void 0
-const toString = Object.prototype.toString
+const isArray = Array.isArray
+const isInteger = Number.isSafeInteger
 const hasOwnProperty = Object.prototype.hasOwnProperty
-const isArray = Array.isArray || function (obj) {
-  return toString.call(obj) === '[object Array]'
-}
-const isInteger = Number.isSafeInteger || function (num) {
-  return num === Math.floor(num)
-}
 
 /**
  * JsonRpc Class
@@ -38,7 +32,7 @@ class RequestObject extends JsonRpc {
 
     this.id = id
     this.method = method
-    if (params !== undef) this.params = params
+    if (params !== undefined) this.params = params
   }
 }
 RequestObject.prototype.name = 'request'
@@ -48,7 +42,7 @@ class NotificationObject extends JsonRpc {
     super()
 
     this.method = method
-    if (params !== undef) this.params = params
+    if (params !== undefined) this.params = params
   }
 }
 NotificationObject.prototype.name = 'notification'
@@ -98,7 +92,7 @@ class JsonRpcError extends Error {
   constructor (message, code, data) {
     super()
 
-    this.message = message === undef ? '' : String(message)
+    this.message = message === undefined ? '' : String(message)
     this.code = isInteger(code) ? code : 0
     if (data != null) this.data = data
   }
@@ -301,11 +295,11 @@ function checkMethod (method) {
 }
 
 function checkResult (result) {
-  return result === undef ? JsonRpcError.internalError('Result must exist for success Response objects') : null
+  return result === undefined ? JsonRpcError.internalError('Result must exist for success Response objects') : null
 }
 
 function checkParams (params) {
-  if (params === undef) return null
+  if (params === undefined) return null
   if (isArray(params) || isObject(params)) {
     // ensure params can be stringify.
     try {
@@ -335,11 +329,11 @@ function checkError (error) {
 }
 
 function isString (obj) {
-  return obj && typeof obj === 'string'
+  return obj !== '' && typeof obj === 'string'
 }
 
 function isObject (obj) {
-  return obj && typeof obj === 'object' && !isArray(obj)
+  return obj != null && typeof obj === 'object' && !isArray(obj)
 }
 
 export default jsonrpc

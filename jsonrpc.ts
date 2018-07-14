@@ -4,13 +4,16 @@
 // **License:** MIT
 'use strict'
 
-type ID = number | string
-type defined = string | number | boolean | null | object
+type ID = string | number
+type defined = string | number | boolean | object | null
 type RpcParams = defined | defined[]
 
-const isInteger: (num: number) => boolean = Number.isSafeInteger || function (num) {
-  return num === Math.floor(num) && Math.abs(num) <= 9007199254740991
-}
+const hasOwnProperty = Object.prototype.hasOwnProperty
+const isInteger: (num: number) => boolean = typeof Number.isSafeInteger === 'function'
+  ? Number.isSafeInteger // ECMAScript 2015
+  : function (num) {
+    return typeof num === 'number' && isFinite(num) && num === Math.floor(num) && Math.abs(num) <= 9007199254740991
+  }
 
 /**
  * JsonRpc Class
@@ -230,7 +233,7 @@ interface IParsedObject {
 export function parse (
   message: string,
 ): IParsedObject | IParsedObject[] {
-  if (!message || typeof message !== 'string') {
+  if (!isString(message)) {
     return new JsonRpcParsed(
       JsonRpcError.invalidRequest(message),
       RpcStatusType.invalid,
@@ -250,7 +253,7 @@ export function parse (
   if (!Array.isArray(jsonrpcObj)) {
     return parseObject(jsonrpcObj)
   }
-  if (!jsonrpcObj.length) {
+  if (jsonrpcObj.length === 0) {
     return new JsonRpcParsed(
       JsonRpcError.invalidRequest(jsonrpcObj),
       RpcStatusType.invalid,
@@ -285,28 +288,28 @@ export function parseObject (obj: JsonRpc): IParsedObject {
   let payload: JsonRpc | JsonRpcError | null = null
   let payloadType: RpcStatusType = RpcStatusType.invalid
 
-  if (!obj || obj.jsonrpc !== JsonRpc.VERSION) {
+  if (obj == null || obj.jsonrpc !== JsonRpc.VERSION) {
     err = JsonRpcError.invalidRequest(obj)
     payloadType = RpcStatusType.invalid
-  } else if (!obj.hasOwnProperty('id')) {
+  } else if (!hasOwnProperty.call(obj, 'id')) {
     const tmp = obj as NotificationObject
     payload = new NotificationObject(tmp.method, tmp.params)
     err = validateMessage(payload)
     payloadType = RpcStatusType.notification
-  } else if (obj.hasOwnProperty('method')) {
+  } else if (hasOwnProperty.call(obj, 'method')) {
     const tmp = obj as RequestObject
     payload = new RequestObject(tmp.id, tmp.method, tmp.params)
     err = validateMessage(payload)
     payloadType = RpcStatusType.request
-  } else if (obj.hasOwnProperty('result')) {
+  } else if (hasOwnProperty.call(obj, 'result')) {
     const tmp = obj as SuccessObject
     payload = new SuccessObject(tmp.id, tmp.result)
     err = validateMessage(payload)
     payloadType = RpcStatusType.success
-  } else if (obj.hasOwnProperty('error')) {
+  } else if (hasOwnProperty.call(obj, 'error')) {
     const tmp = obj as ErrorObject
     payloadType = RpcStatusType.error
-    if (!tmp.error) {
+    if (tmp.error == null) {
       err = JsonRpcError.internalError(tmp)
     } else {
       const errorObj = new JsonRpcError(
@@ -322,11 +325,12 @@ export function parseObject (obj: JsonRpc): IParsedObject {
       }
     }
   }
-  if (!err && payload) {
+
+  if (err == null && payload != null) {
     return new JsonRpcParsed(payload, payloadType)
   }
   return new JsonRpcParsed(
-    err || JsonRpcError.invalidRequest(obj),
+    err != null ? err : JsonRpcError.invalidRequest(obj),
     RpcStatusType.invalid,
   )
 }
@@ -335,45 +339,55 @@ export function parseObject (obj: JsonRpc): IParsedObject {
 function validateMessage (obj: JsonRpc, throwIt?: boolean): JsonRpcError | null {
   let err: JsonRpcError | null = null
   if (obj instanceof RequestObject) {
-    err =
-      checkId(obj.id) || checkMethod(obj.method) || checkParams(obj.params)
+    err = checkId(obj.id)
+    if (err == null) {
+      err = checkMethod(obj.method)
+    }
+    if (err == null) {
+      err = checkParams(obj.params)
+    }
   } else if (obj instanceof NotificationObject) {
-    err = checkMethod(obj.method) || checkParams(obj.params)
+    err = checkMethod(obj.method)
+    if (err == null) {
+      err = checkParams(obj.params)
+    }
   } else if (obj instanceof SuccessObject) {
-    err = checkId(obj.id) || checkResult(obj.result)
+    err = checkId(obj.id)
+    if (err == null) {
+      err = checkResult(obj.result)
+    }
   } else if (obj instanceof ErrorObject) {
-    err = checkId(obj.id, true) || checkError(obj.error as JsonRpcError)
+    err = checkId(obj.id, true)
+    if (err == null) {
+      err = checkError(obj.error as JsonRpcError)
+    }
   }
-  if (err && throwIt) { throw err }
+  if (throwIt && err != null) {
+    throw err
+  }
   return err
 }
 
-type JsonRpcErrorOrNot = JsonRpcError | null
-
-function checkId (id: ID, maybeNull?: boolean): JsonRpcErrorOrNot {
+function checkId (id: ID, maybeNull?: boolean): JsonRpcError | null {
   if (maybeNull && id === null) {
     return null
    }
   return isString(id) || isInteger(id as number)
     ? null
-    : JsonRpcError.internalError(
-        '"id" must be provided, a string or an integer.',
-      )
+    : JsonRpcError.internalError('"id" must be provided, a string or an integer.')
 }
 
-function checkMethod (method: string): JsonRpcErrorOrNot {
+function checkMethod (method: string): JsonRpcError | null {
   return isString(method) ? null : JsonRpcError.methodNotFound(method)
 }
 
-function checkResult (result: defined): JsonRpcErrorOrNot {
-  return result === void 0
-    ? JsonRpcError.internalError(
-        'Result must exist for success Response objects',
-      )
+function checkResult (result: defined): JsonRpcError | null {
+  return result === undefined
+    ? JsonRpcError.internalError('Result must exist for success Response objects')
     : null
 }
 
-function checkParams (params?: RpcParams): JsonRpcErrorOrNot {
+function checkParams (params?: RpcParams): JsonRpcError | null {
   if (params === undefined) {
     return null
   }
@@ -389,34 +403,28 @@ function checkParams (params?: RpcParams): JsonRpcErrorOrNot {
   return JsonRpcError.invalidParams(params)
 }
 
-function checkError (err: JsonRpcError): JsonRpcErrorOrNot {
+function checkError (err: JsonRpcError): JsonRpcError | null {
   if (!(err instanceof JsonRpcError)) {
-    return JsonRpcError.internalError(
-      'Error must be an instance of JsonRpcError',
-    )
+    return JsonRpcError.internalError('Error must be an instance of JsonRpcError')
   }
 
   if (!isInteger(err.code)) {
-    return JsonRpcError.internalError(
-      'Invalid error code. It must be an integer.',
-    )
+    return JsonRpcError.internalError('Invalid error code. It must be an integer.')
   }
 
   if (!isString(err.message)) {
-    return JsonRpcError.internalError(
-      'Message must exist or must be a string.',
-    )
+    return JsonRpcError.internalError('Message must exist or must be a string.')
   }
 
   return null
 }
 
 function isString (obj: any): boolean {
-  return obj && typeof obj === 'string'
+  return obj !== '' && typeof obj === 'string'
 }
 
 function isObject (obj: any): boolean {
-  return obj && typeof obj === 'object' && !Array.isArray(obj)
+  return obj != null && typeof obj === 'object' && !Array.isArray(obj)
 }
 
 const jsonrpc = {

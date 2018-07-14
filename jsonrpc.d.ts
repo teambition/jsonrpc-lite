@@ -1,5 +1,5 @@
-declare type ID = number | string;
-declare type defined = string | number | boolean | null | object;
+declare type ID = string | number;
+declare type defined = string | number | boolean | object | null;
 declare type RpcParams = defined | defined[];
 /**
  * JsonRpc Class

@@ -5,9 +5,12 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var isInteger = Number.isSafeInteger || function (num) {
-    return num === Math.floor(num) && Math.abs(num) <= 9007199254740991;
-};
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var isInteger = typeof Number.isSafeInteger === 'function'
+    ? Number.isSafeInteger // ECMAScript 2015
+    : function (num) {
+        return typeof num === 'number' && isFinite(num) && num === Math.floor(num) && Math.abs(num) <= 9007199254740991;
+    };
 var JsonRpc = /** @class */ (function () {
     function JsonRpc() {
         this.jsonrpc = '2.0';
@@ -183,7 +186,7 @@ function error(id, err) {
 }
 exports.error = error;
 function parse(message) {
-    if (!message || typeof message !== 'string') {
+    if (!isString(message)) {
         return new JsonRpcParsed(JsonRpcError.invalidRequest(message), RpcStatusType.invalid);
     }
     var jsonrpcObj;
@@ -196,7 +199,7 @@ function parse(message) {
     if (!Array.isArray(jsonrpcObj)) {
         return parseObject(jsonrpcObj);
     }
-    if (!jsonrpcObj.length) {
+    if (jsonrpcObj.length === 0) {
         return new JsonRpcParsed(JsonRpcError.invalidRequest(jsonrpcObj), RpcStatusType.invalid);
     }
     var parsedObjectArray = [];
@@ -225,32 +228,32 @@ function parseObject(obj) {
     var err = null;
     var payload = null;
     var payloadType = RpcStatusType.invalid;
-    if (!obj || obj.jsonrpc !== JsonRpc.VERSION) {
+    if (obj == null || obj.jsonrpc !== JsonRpc.VERSION) {
         err = JsonRpcError.invalidRequest(obj);
         payloadType = RpcStatusType.invalid;
     }
-    else if (!obj.hasOwnProperty('id')) {
+    else if (!hasOwnProperty.call(obj, 'id')) {
         var tmp = obj;
         payload = new NotificationObject(tmp.method, tmp.params);
         err = validateMessage(payload);
         payloadType = RpcStatusType.notification;
     }
-    else if (obj.hasOwnProperty('method')) {
+    else if (hasOwnProperty.call(obj, 'method')) {
         var tmp = obj;
         payload = new RequestObject(tmp.id, tmp.method, tmp.params);
         err = validateMessage(payload);
         payloadType = RpcStatusType.request;
     }
-    else if (obj.hasOwnProperty('result')) {
+    else if (hasOwnProperty.call(obj, 'result')) {
         var tmp = obj;
         payload = new SuccessObject(tmp.id, tmp.result);
         err = validateMessage(payload);
         payloadType = RpcStatusType.success;
     }
-    else if (obj.hasOwnProperty('error')) {
+    else if (hasOwnProperty.call(obj, 'error')) {
         var tmp = obj;
         payloadType = RpcStatusType.error;
-        if (!tmp.error) {
+        if (tmp.error == null) {
             err = JsonRpcError.internalError(tmp);
         }
         else {
@@ -264,29 +267,43 @@ function parseObject(obj) {
             }
         }
     }
-    if (!err && payload) {
+    if (err == null && payload != null) {
         return new JsonRpcParsed(payload, payloadType);
     }
-    return new JsonRpcParsed(err || JsonRpcError.invalidRequest(obj), RpcStatusType.invalid);
+    return new JsonRpcParsed(err != null ? err : JsonRpcError.invalidRequest(obj), RpcStatusType.invalid);
 }
 exports.parseObject = parseObject;
 // if error, return error, else return null
 function validateMessage(obj, throwIt) {
     var err = null;
     if (obj instanceof RequestObject) {
-        err =
-            checkId(obj.id) || checkMethod(obj.method) || checkParams(obj.params);
+        err = checkId(obj.id);
+        if (err == null) {
+            err = checkMethod(obj.method);
+        }
+        if (err == null) {
+            err = checkParams(obj.params);
+        }
     }
     else if (obj instanceof NotificationObject) {
-        err = checkMethod(obj.method) || checkParams(obj.params);
+        err = checkMethod(obj.method);
+        if (err == null) {
+            err = checkParams(obj.params);
+        }
     }
     else if (obj instanceof SuccessObject) {
-        err = checkId(obj.id) || checkResult(obj.result);
+        err = checkId(obj.id);
+        if (err == null) {
+            err = checkResult(obj.result);
+        }
     }
     else if (obj instanceof ErrorObject) {
-        err = checkId(obj.id, true) || checkError(obj.error);
+        err = checkId(obj.id, true);
+        if (err == null) {
+            err = checkError(obj.error);
+        }
     }
-    if (err && throwIt) {
+    if (throwIt && err != null) {
         throw err;
     }
     return err;
@@ -303,7 +320,7 @@ function checkMethod(method) {
     return isString(method) ? null : JsonRpcError.methodNotFound(method);
 }
 function checkResult(result) {
-    return result === void 0
+    return result === undefined
         ? JsonRpcError.internalError('Result must exist for success Response objects')
         : null;
 }
@@ -336,10 +353,10 @@ function checkError(err) {
     return null;
 }
 function isString(obj) {
-    return obj && typeof obj === 'string';
+    return obj !== '' && typeof obj === 'string';
 }
 function isObject(obj) {
-    return obj && typeof obj === 'object' && !Array.isArray(obj);
+    return obj != null && typeof obj === 'object' && !Array.isArray(obj);
 }
 var jsonrpc = {
     JsonRpc: JsonRpc,

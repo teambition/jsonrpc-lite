@@ -3,11 +3,11 @@
 const assert = require('assert')
 const tman = require('tman')
 
-
 test(require('../jsonrpc'))
 
 require('ts-node/register')
 test(require('../jsonrpc.ts').default)
+
 test(require('@std/esm')(module)('../jsonrpc.mjs').default)
 
 function test (jsonrpc) {
