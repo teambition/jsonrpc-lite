@@ -1,6 +1,6 @@
 declare type ID = string | number;
-declare type defined = string | number | boolean | object | null;
-declare type RpcParams = defined | defined[];
+declare type Defined = string | number | boolean | object | null;
+declare type RpcParams = object | Defined[];
 /**
  * JsonRpc Class
  *
@@ -29,8 +29,8 @@ declare class NotificationObject extends JsonRpc {
 }
 declare class SuccessObject extends JsonRpc {
     id: ID;
-    result: defined;
-    constructor(id: ID, result: defined);
+    result: Defined;
+    constructor(id: ID, result: Defined);
 }
 declare class ErrorObject extends JsonRpc {
     id: ID;
@@ -97,7 +97,7 @@ export declare function notification(method: string, params?: RpcParams): Notifi
  * @return {Object} JsonRpc object
  * @api public
  */
-export declare function success(id: ID, result: defined): SuccessObject;
+export declare function success(id: ID, result: Defined): SuccessObject;
 /**
  * Creates a JSON-RPC 2.0 error response object
  *

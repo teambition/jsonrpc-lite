@@ -5,8 +5,8 @@
 'use strict'
 
 type ID = string | number
-type defined = string | number | boolean | object | null
-type RpcParams = defined | defined[]
+type Defined = string | number | boolean | object | null
+type RpcParams = object | Defined[]
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
 const isInteger: (num: number) => boolean = typeof Number.isSafeInteger === 'function'
@@ -65,8 +65,8 @@ class NotificationObject extends JsonRpc {
 
 class SuccessObject extends JsonRpc {
   public id: ID
-  public result: defined
-  constructor (id: ID, result: defined) {
+  public result: Defined
+  constructor (id: ID, result: Defined) {
     super()
     this.id = id
     this.result = result
@@ -191,7 +191,7 @@ export function notification (
  * @return {Object} JsonRpc object
  * @api public
  */
-export function success (id: ID, result: defined): SuccessObject {
+export function success (id: ID, result: Defined): SuccessObject {
   const object = new SuccessObject(id, result)
   validateMessage(object, true)
   return object
@@ -381,7 +381,7 @@ function checkMethod (method: string): JsonRpcError | null {
   return isString(method) ? null : JsonRpcError.methodNotFound(method)
 }
 
-function checkResult (result: defined): JsonRpcError | null {
+function checkResult (result: Defined): JsonRpcError | null {
   return result === undefined
     ? JsonRpcError.internalError('Result must exist for success Response objects')
     : null
