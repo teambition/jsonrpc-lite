@@ -154,7 +154,7 @@ Takes a JSON-RPC 2.0 payload (Object) and tries to parse it into a JSON. If succ
 
 - `message`: {Object}
 
-return an array, or an object same as `jsonrpc.parse`.
+return an `JsonRpcParsed` object with `type` and `payload`.
 
 ### Class: jsonrpc.JsonRpc()
 
