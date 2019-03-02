@@ -8,8 +8,6 @@ test(require('../jsonrpc'))
 require('ts-node/register')
 test(require('../jsonrpc.ts').default)
 
-test(require('@std/esm')(module)('../jsonrpc.mjs').default)
-
 function test (jsonrpc) {
   tman.suite('jsonrpc', function () {
     tman.it('jsonrpc.request', function () {

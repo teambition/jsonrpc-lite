@@ -274,7 +274,7 @@ export function parse (
  * success, error, or invalid), and return it's type and properly formatted object.
  *
  * @param  {Object} msg
- * @return {Object|Array} an array, or an object of this format:
+ * @return {Object} an `JsonRpcParsed` object with `type` and `payload`:
  *
  *  {
  *    type: <Enum, 'request'|'notification'|'success'|'error'|'invalid'>
@@ -283,7 +283,7 @@ export function parse (
  *
  * @api public
  */
-export function parseObject (obj: JsonRpc): IParsedObject {
+export function parseObject (obj: any): IParsedObject {
   let err: JsonRpcError | null = null
   let payload: JsonRpc | JsonRpcError | null = null
   let payloadType: RpcStatusType = RpcStatusType.invalid
