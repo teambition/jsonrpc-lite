@@ -302,7 +302,7 @@
   }
 
   function checkMethod (method) {
-    return isString(method) ? null : JsonRpcError.methodNotFound(method)
+    return isString(method) ? null : JsonRpcError.invalidRequest(method)
   }
 
   function checkResult (result) {
