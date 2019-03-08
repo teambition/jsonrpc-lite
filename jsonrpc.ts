@@ -378,7 +378,7 @@ function checkId (id: ID, maybeNull?: boolean): JsonRpcError | null {
 }
 
 function checkMethod (method: string): JsonRpcError | null {
-  return isString(method) ? null : JsonRpcError.methodNotFound(method)
+  return isString(method) ? null : JsonRpcError.invalidRequest(method)
 }
 
 function checkResult (result: Defined): JsonRpcError | null {

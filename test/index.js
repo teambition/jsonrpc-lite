@@ -161,10 +161,10 @@ function test (jsonrpc) {
         error: {code: -32600, message: 'Invalid request'}
       })
 
-      assert.deepEqual(jsonrpc.error(123, jsonrpc.JsonRpcError.methodNotFound()), {
+      assert.deepEqual(jsonrpc.error(123, jsonrpc.JsonRpcError.invalidRequest()), {
         jsonrpc: '2.0',
         id: 123,
-        error: {code: -32601, message: 'Method not found'}
+        error: {code: -32600, message: 'Invalid request'}
       })
 
       assert.deepEqual(jsonrpc.error(123, jsonrpc.JsonRpcError.invalidParams()), {
@@ -217,7 +217,7 @@ function test (jsonrpc) {
 
       res = jsonrpc.parse('{"jsonrpc":"2.0","method":123}')
       assert.strictEqual(res.type, 'invalid')
-      assert.deepEqual(res.payload, {code: -32601, message: 'Method not found', data: 123})
+      assert.deepEqual(res.payload, {code: -32600, message: 'Invalid request', data: 123})
 
       res = jsonrpc.parse('{"jsonrpc":"2.0","id":123}')
       assert.strictEqual(res.type, 'invalid')
@@ -253,8 +253,8 @@ function test (jsonrpc) {
 
       res = jsonrpc.parse('{"jsonrpc":"2.0","id":123,"method":123}')
       assert.strictEqual(res.type, 'invalid')
-      assert.strictEqual(res.payload.code, -32601)
-      assert.strictEqual(res.payload.message, 'Method not found')
+      assert.strictEqual(res.payload.code, -32600)
+      assert.strictEqual(res.payload.message, 'Invalid request')
 
       res = jsonrpc.parse('{"jsonrpc":"2.0","id":123,"method":"update"}')
       assert.strictEqual(res.type, 'request')
