@@ -211,6 +211,27 @@ export function error (id: ID, err: JsonRpcError): ErrorObject {
   return object
 }
 
+interface IParsedObjectSuccess {
+  type: RpcStatusType.success,
+  payload: SuccessObject
+}
+interface IParsedObjectNotification {
+  type: RpcStatusType.notification,
+  payload: NotificationObject
+}
+interface IParsedObjectRequest {
+  type: RpcStatusType.request,
+  payload: RequestObject
+}
+interface IParsedObjectError {
+  type: RpcStatusType.error,
+  payload: ErrorObject
+}
+interface IParsedObjectInvalid {
+  type: RpcStatusType.invalid,
+  payload: JsonRpcError
+}
+
 /**
  * Takes a JSON-RPC 2.0 payload (String) and tries to parse it into a JSON.
  * If successful, determine what object is it (response, notification,
@@ -226,10 +247,8 @@ export function error (id: ID, err: JsonRpcError): ErrorObject {
  *
  * @api public
  */
-interface IParsedObject {
-  type: RpcStatusType
-  payload: JsonRpc | JsonRpcError
-}
+type IParsedObject = IParsedObjectSuccess | IParsedObjectNotification | IParsedObjectRequest | IParsedObjectError | IParsedObjectInvalid;
+
 export function parse (
   message: string,
 ): IParsedObject | IParsedObject[] {
@@ -237,7 +256,7 @@ export function parse (
     return new JsonRpcParsed(
       JsonRpcError.invalidRequest(message),
       RpcStatusType.invalid,
-    )
+    ) as IParsedObject
   }
 
   let jsonrpcObj: JsonRpc | JsonRpc[]
@@ -247,7 +266,7 @@ export function parse (
     return new JsonRpcParsed(
       JsonRpcError.parseError(message),
       RpcStatusType.invalid,
-    )
+    ) as IParsedObject
   }
 
   if (!Array.isArray(jsonrpcObj)) {
@@ -257,7 +276,7 @@ export function parse (
     return new JsonRpcParsed(
       JsonRpcError.invalidRequest(jsonrpcObj),
       RpcStatusType.invalid,
-    )
+    ) as IParsedObject
   }
 
   const parsedObjectArray: IParsedObject[] = []
@@ -327,12 +346,12 @@ export function parseObject (obj: any): IParsedObject {
   }
 
   if (err == null && payload != null) {
-    return new JsonRpcParsed(payload, payloadType)
+    return new JsonRpcParsed(payload, payloadType) as IParsedObject
   }
   return new JsonRpcParsed(
     err != null ? err : JsonRpcError.invalidRequest(obj),
     RpcStatusType.invalid,
-  )
+  ) as IParsedObject
 }
 
 // if error, return error, else return null
