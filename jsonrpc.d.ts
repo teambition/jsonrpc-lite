@@ -107,6 +107,26 @@ export declare function success(id: ID, result: Defined): SuccessObject;
  * @api public
  */
 export declare function error(id: ID, err: JsonRpcError): ErrorObject;
+interface IParsedObjectSuccess {
+    type: RpcStatusType.success;
+    payload: SuccessObject;
+}
+interface IParsedObjectNotification {
+    type: RpcStatusType.notification;
+    payload: NotificationObject;
+}
+interface IParsedObjectRequest {
+    type: RpcStatusType.request;
+    payload: RequestObject;
+}
+interface IParsedObjectError {
+    type: RpcStatusType.error;
+    payload: ErrorObject;
+}
+interface IParsedObjectInvalid {
+    type: RpcStatusType.invalid;
+    payload: JsonRpcError;
+}
 /**
  * Takes a JSON-RPC 2.0 payload (String) and tries to parse it into a JSON.
  * If successful, determine what object is it (response, notification,
@@ -122,10 +142,7 @@ export declare function error(id: ID, err: JsonRpcError): ErrorObject;
  *
  * @api public
  */
-interface IParsedObject {
-    type: RpcStatusType;
-    payload: JsonRpc | JsonRpcError;
-}
+declare type IParsedObject = IParsedObjectSuccess | IParsedObjectNotification | IParsedObjectRequest | IParsedObjectError | IParsedObjectInvalid;
 export declare function parse(message: string): IParsedObject | IParsedObject[];
 /**
  * Takes a JSON-RPC 2.0 payload (Object) and tries to parse it into a JSON.
