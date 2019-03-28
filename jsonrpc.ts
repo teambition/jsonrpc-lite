@@ -26,7 +26,7 @@ interface IJsonRpcType {
 }
 class JsonRpc implements IJsonRpcType {
   static VERSION: string = '2.0'
-  static serialize () {
+  serialize () {
     return JSON.stringify(this)
   }
   readonly jsonrpc: string
