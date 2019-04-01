@@ -12,9 +12,9 @@ interface IJsonRpcType {
 }
 declare class JsonRpc implements IJsonRpcType {
     static VERSION: string;
-    serialize(): string;
     readonly jsonrpc: string;
     constructor();
+    serialize(): string;
 }
 declare class RequestObject extends JsonRpc {
     id: ID;
