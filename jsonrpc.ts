@@ -4,9 +4,9 @@
 // **License:** MIT
 'use strict'
 
-type ID = string | number
-type Defined = string | number | boolean | object | null
-type RpcParams = object | Defined[]
+export type ID = string | number
+export type Defined = string | number | boolean | object | null
+export type RpcParams = object | Defined[]
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
 const isInteger: (num: number) => boolean = typeof Number.isSafeInteger === 'function'
@@ -21,10 +21,11 @@ const isInteger: (num: number) => boolean = typeof Number.isSafeInteger === 'fun
  * @return {Object} JsonRpc object
  * @api public
  */
-interface IJsonRpcType {
+export interface IJsonRpcType {
   readonly jsonrpc: string
 }
-class JsonRpc implements IJsonRpcType {
+
+export class JsonRpc implements IJsonRpcType {
   static VERSION: string = '2.0'
   readonly jsonrpc: string
 
@@ -38,7 +39,7 @@ class JsonRpc implements IJsonRpcType {
 
 }
 
-class RequestObject extends JsonRpc {
+export class RequestObject extends JsonRpc {
   public id: ID
   public method: string
   public params?: RpcParams
@@ -52,7 +53,7 @@ class RequestObject extends JsonRpc {
   }
 }
 
-class NotificationObject extends JsonRpc {
+export class NotificationObject extends JsonRpc {
   public method: string
   public params?: RpcParams
   constructor (method: string, params?: RpcParams) {
@@ -64,7 +65,7 @@ class NotificationObject extends JsonRpc {
   }
 }
 
-class SuccessObject extends JsonRpc {
+export class SuccessObject extends JsonRpc {
   public id: ID
   public result: Defined
   constructor (id: ID, result: Defined) {
@@ -74,7 +75,7 @@ class SuccessObject extends JsonRpc {
   }
 }
 
-class ErrorObject extends JsonRpc {
+export class ErrorObject extends JsonRpc {
   // tslint:disable-next-line:no-shadowed-variable
   constructor (public id: ID, public error: JsonRpcError) {
     super()
@@ -90,14 +91,15 @@ class ErrorObject extends JsonRpc {
  * @param  {type: <Enum, 'request'|'notification'|'success'|'error'|'invalid'>} type
  * @api public
  */
-enum RpcStatusType {
+export enum RpcStatusType {
   request = 'request',
   notification = 'notification',
   success = 'success',
   error = 'error',
   invalid = 'invalid',
 }
-class JsonRpcParsed {
+
+export class JsonRpcParsed {
   constructor (
     public payload: JsonRpc | JsonRpcError,
     public type: RpcStatusType,
@@ -115,7 +117,7 @@ class JsonRpcParsed {
  * @return {String} name: optional
  * @api public
  */
-class JsonRpcError {
+export class JsonRpcError {
   static invalidRequest = function (data: any): JsonRpcError {
     return new JsonRpcError('Invalid request', -32600, data)
   }
@@ -212,23 +214,27 @@ export function error (id: ID, err: JsonRpcError): ErrorObject {
   return object
 }
 
-interface IParsedObjectSuccess {
+export interface IParsedObjectSuccess {
   type: RpcStatusType.success,
   payload: SuccessObject
 }
-interface IParsedObjectNotification {
+
+export interface IParsedObjectNotification {
   type: RpcStatusType.notification,
   payload: NotificationObject
 }
-interface IParsedObjectRequest {
+
+export interface IParsedObjectRequest {
   type: RpcStatusType.request,
   payload: RequestObject
 }
-interface IParsedObjectError {
+
+export interface IParsedObjectError {
   type: RpcStatusType.error,
   payload: ErrorObject
 }
-interface IParsedObjectInvalid {
+
+export interface IParsedObjectInvalid {
   type: RpcStatusType.invalid,
   payload: JsonRpcError
 }
@@ -459,4 +465,4 @@ const jsonrpc = {
 }
 
 export default jsonrpc
-export { JsonRpc, JsonRpcError, jsonrpc }
+export { jsonrpc }

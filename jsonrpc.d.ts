@@ -1,38 +1,38 @@
-declare type ID = string | number;
-declare type Defined = string | number | boolean | object | null;
-declare type RpcParams = object | Defined[];
+export declare type ID = string | number;
+export declare type Defined = string | number | boolean | object | null;
+export declare type RpcParams = object | Defined[];
 /**
  * JsonRpc Class
  *
  * @return {Object} JsonRpc object
  * @api public
  */
-interface IJsonRpcType {
+export interface IJsonRpcType {
     readonly jsonrpc: string;
 }
-declare class JsonRpc implements IJsonRpcType {
+export declare class JsonRpc implements IJsonRpcType {
     static VERSION: string;
     readonly jsonrpc: string;
     constructor();
     serialize(): string;
 }
-declare class RequestObject extends JsonRpc {
+export declare class RequestObject extends JsonRpc {
     id: ID;
     method: string;
     params?: RpcParams;
     constructor(id: ID, method: string, params?: RpcParams);
 }
-declare class NotificationObject extends JsonRpc {
+export declare class NotificationObject extends JsonRpc {
     method: string;
     params?: RpcParams;
     constructor(method: string, params?: RpcParams);
 }
-declare class SuccessObject extends JsonRpc {
+export declare class SuccessObject extends JsonRpc {
     id: ID;
     result: Defined;
     constructor(id: ID, result: Defined);
 }
-declare class ErrorObject extends JsonRpc {
+export declare class ErrorObject extends JsonRpc {
     id: ID;
     error: JsonRpcError;
     constructor(id: ID, error: JsonRpcError);
@@ -44,12 +44,17 @@ declare class ErrorObject extends JsonRpc {
  * @param  {type: <Enum, 'request'|'notification'|'success'|'error'|'invalid'>} type
  * @api public
  */
-declare enum RpcStatusType {
+export declare enum RpcStatusType {
     request = "request",
     notification = "notification",
     success = "success",
     error = "error",
     invalid = "invalid"
+}
+export declare class JsonRpcParsed {
+    payload: JsonRpc | JsonRpcError;
+    type: RpcStatusType;
+    constructor(payload: JsonRpc | JsonRpcError, type: RpcStatusType);
 }
 /**
  * JsonRpcError Class
@@ -59,7 +64,7 @@ declare enum RpcStatusType {
  * @return {String} name: optional
  * @api public
  */
-declare class JsonRpcError {
+export declare class JsonRpcError {
     static invalidRequest: (data: any) => JsonRpcError;
     static methodNotFound: (data: any) => JsonRpcError;
     static invalidParams: (data: any) => JsonRpcError;
@@ -107,23 +112,23 @@ export declare function success(id: ID, result: Defined): SuccessObject;
  * @api public
  */
 export declare function error(id: ID, err: JsonRpcError): ErrorObject;
-interface IParsedObjectSuccess {
+export interface IParsedObjectSuccess {
     type: RpcStatusType.success;
     payload: SuccessObject;
 }
-interface IParsedObjectNotification {
+export interface IParsedObjectNotification {
     type: RpcStatusType.notification;
     payload: NotificationObject;
 }
-interface IParsedObjectRequest {
+export interface IParsedObjectRequest {
     type: RpcStatusType.request;
     payload: RequestObject;
 }
-interface IParsedObjectError {
+export interface IParsedObjectError {
     type: RpcStatusType.error;
     payload: ErrorObject;
 }
-interface IParsedObjectInvalid {
+export interface IParsedObjectInvalid {
     type: RpcStatusType.invalid;
     payload: JsonRpcError;
 }
@@ -171,4 +176,4 @@ declare const jsonrpc: {
     parseObject: typeof parseObject;
 };
 export default jsonrpc;
-export { JsonRpc, JsonRpcError, jsonrpc };
+export { jsonrpc };
