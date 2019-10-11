@@ -150,11 +150,33 @@ export interface IParsedObjectInvalid {
 declare type IParsedObject = IParsedObjectSuccess | IParsedObjectNotification | IParsedObjectRequest | IParsedObjectError | IParsedObjectInvalid;
 export declare function parse(message: string): IParsedObject | IParsedObject[];
 /**
+ * Takes a JSON-RPC 2.0 payload (Object) or batch (Object[]) and tries to parse it.
+ * If successful, determine what objects are inside (response, notification,
+ * success, error, or invalid), and return their types and properly formatted objects.
+ *
+ * @param  {Object|Array} jsonrpcObj
+ * @return {Object|Array} a single object or an array of `JsonRpcParsed` objects with `type` and `payload`:
+ *
+ *  {
+ *    type: <Enum, 'request'|'notification'|'success'|'error'|'invalid'>
+ *    payload: <JsonRpc|JsonRpcError>
+ *  }
+ *
+ * @api public
+ */
+export declare function parseJsonRpcObject(jsonrpcObj: JsonRpc | JsonRpc[]): IParsedObject | IParsedObject[];
+/**
+ * Alias for `parse` method.
+ * Takes a JSON-RPC 2.0 payload (String) and tries to parse it into a JSON.
+ * @api public
+ */
+export declare const parseJsonRpcString: typeof parse;
+/**
  * Takes a JSON-RPC 2.0 payload (Object) and tries to parse it into a JSON.
  * If successful, determine what object is it (response, notification,
  * success, error, or invalid), and return it's type and properly formatted object.
  *
- * @param  {Object} msg
+ * @param  {Object} obj
  * @return {Object} an `JsonRpcParsed` object with `type` and `payload`:
  *
  *  {
@@ -174,6 +196,8 @@ declare const jsonrpc: {
     error: typeof error;
     parse: typeof parse;
     parseObject: typeof parseObject;
+    parseJsonRpcObject: typeof parseJsonRpcObject;
+    parseJsonRpcString: typeof parse;
 };
 export default jsonrpc;
 export { jsonrpc };

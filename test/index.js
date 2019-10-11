@@ -369,5 +369,28 @@ function test (jsonrpc) {
       assert.strictEqual(res[8].type, 'invalid')
       assert.strictEqual(res[9].type, 'success')
     })
+
+    tman.it('jsonrpc.parseJsonRpcObject', function () {
+      const reqs = [
+        '{"jsonrpc":"2.0","id":123,"method":"update","params":{}}',
+        '{"jsonrpc":"2.0","id":123,"error":123}',
+        '{"jsonrpc":"2.0","id":123,"error":{"code":123,"message":"test"}}',
+        '{"jsonrpc":"2.0","id":123,"error":{"code":"123","message":"test"}}',
+        '{"jsonrpc":"2.0","method":"update","params":null}',
+        // batch
+        JSON.stringify([
+          {'jsonrpc': '2.0', 'method': 'sum', 'params': [1, 2, 4], 'id': '1'},
+          {'jsonrpc': '2.0', 'method': 'notify_hello', 'params': [7]},
+        ])
+      ]
+
+      reqs.forEach(req => {
+        assert.deepEqual(jsonrpc.parse(req), jsonrpc.parseJsonRpcObject(JSON.parse(req)))
+      })
+    })
+
+    tman.it('jsonrpc.parseJsonRpcString', function() {
+      assert.strictEqual(jsonrpc.parse, jsonrpc.parseJsonRpcString)
+    })
   })
 }
