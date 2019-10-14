@@ -254,7 +254,8 @@ export interface IParsedObjectInvalid {
  *
  * @api public
  */
-type IParsedObject = IParsedObjectSuccess | IParsedObjectNotification | IParsedObjectRequest | IParsedObjectError | IParsedObjectInvalid;
+export type IParsedObject = IParsedObjectSuccess | IParsedObjectNotification |
+  IParsedObjectRequest | IParsedObjectError| IParsedObjectInvalid;
 
 export function parse (
   message: string,

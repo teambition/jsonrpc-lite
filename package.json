@@ -33,7 +33,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "test": "tslint -p tsconfig.json -t stylish jsonrpc.ts && tman"
+    "lint":"tslint -p tsconfig.json -t stylish jsonrpc.ts",
+    "test": "npm run lint && tman"
   },
   "files": [
     "README.md",
