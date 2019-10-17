@@ -44,7 +44,7 @@ export declare class ErrorObject extends JsonRpc {
  * @param  {type: <Enum, 'request'|'notification'|'success'|'error'|'invalid'>} type
  * @api public
  */
-export declare enum RpcStatusType {
+export declare const enum RpcStatusType {
     request = "request",
     notification = "notification",
     success = "success",
@@ -147,7 +147,7 @@ export interface IParsedObjectInvalid {
  *
  * @api public
  */
-declare type IParsedObject = IParsedObjectSuccess | IParsedObjectNotification | IParsedObjectRequest | IParsedObjectError | IParsedObjectInvalid;
+export declare type IParsedObject = IParsedObjectSuccess | IParsedObjectNotification | IParsedObjectRequest | IParsedObjectError | IParsedObjectInvalid;
 export declare function parse(message: string): IParsedObject | IParsedObject[];
 /**
  * Takes a JSON-RPC 2.0 payload (Object) or batch (Object[]) and tries to parse it.

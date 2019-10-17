@@ -91,7 +91,7 @@ export class ErrorObject extends JsonRpc {
  * @param  {type: <Enum, 'request'|'notification'|'success'|'error'|'invalid'>} type
  * @api public
  */
-export enum RpcStatusType {
+export const enum RpcStatusType {
   request = 'request',
   notification = 'notification',
   success = 'success',

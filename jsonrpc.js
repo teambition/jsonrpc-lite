@@ -95,21 +95,6 @@ var __extends = (this && this.__extends) || (function () {
         return ErrorObject;
     }(JsonRpc));
     exports.ErrorObject = ErrorObject;
-    /**
-     * JsonRpcParsed Class
-     *
-     * @param  {JsonRpc|JsonRpcError} payload
-     * @param  {type: <Enum, 'request'|'notification'|'success'|'error'|'invalid'>} type
-     * @api public
-     */
-    var RpcStatusType;
-    (function (RpcStatusType) {
-        RpcStatusType["request"] = "request";
-        RpcStatusType["notification"] = "notification";
-        RpcStatusType["success"] = "success";
-        RpcStatusType["error"] = "error";
-        RpcStatusType["invalid"] = "invalid";
-    })(RpcStatusType = exports.RpcStatusType || (exports.RpcStatusType = {}));
     var JsonRpcParsed = /** @class */ (function () {
         function JsonRpcParsed(payload, type) {
             this.payload = payload;
@@ -213,14 +198,14 @@ var __extends = (this && this.__extends) || (function () {
     exports.error = error;
     function parse(message) {
         if (!isString(message)) {
-            return new JsonRpcParsed(JsonRpcError.invalidRequest(message), RpcStatusType.invalid);
+            return new JsonRpcParsed(JsonRpcError.invalidRequest(message), "invalid" /* invalid */);
         }
         var jsonrpcObj;
         try {
             jsonrpcObj = JSON.parse(message);
         }
         catch (err) {
-            return new JsonRpcParsed(JsonRpcError.parseError(message), RpcStatusType.invalid);
+            return new JsonRpcParsed(JsonRpcError.parseError(message), "invalid" /* invalid */);
         }
         return parseJsonRpcObject(jsonrpcObj);
     }
@@ -245,7 +230,7 @@ var __extends = (this && this.__extends) || (function () {
             return parseObject(jsonrpcObj);
         }
         if (jsonrpcObj.length === 0) {
-            return new JsonRpcParsed(JsonRpcError.invalidRequest(jsonrpcObj), RpcStatusType.invalid);
+            return new JsonRpcParsed(JsonRpcError.invalidRequest(jsonrpcObj), "invalid" /* invalid */);
         }
         var parsedObjectArray = [];
         for (var i = 0, len = jsonrpcObj.length; i < len; i++) {
@@ -278,32 +263,32 @@ var __extends = (this && this.__extends) || (function () {
     function parseObject(obj) {
         var err = null;
         var payload = null;
-        var payloadType = RpcStatusType.invalid;
+        var payloadType = "invalid" /* invalid */;
         if (obj == null || obj.jsonrpc !== JsonRpc.VERSION) {
             err = JsonRpcError.invalidRequest(obj);
-            payloadType = RpcStatusType.invalid;
+            payloadType = "invalid" /* invalid */;
         }
         else if (!hasOwnProperty.call(obj, 'id')) {
             var tmp = obj;
             payload = new NotificationObject(tmp.method, tmp.params);
             err = validateMessage(payload);
-            payloadType = RpcStatusType.notification;
+            payloadType = "notification" /* notification */;
         }
         else if (hasOwnProperty.call(obj, 'method')) {
             var tmp = obj;
             payload = new RequestObject(tmp.id, tmp.method, tmp.params);
             err = validateMessage(payload);
-            payloadType = RpcStatusType.request;
+            payloadType = "request" /* request */;
         }
         else if (hasOwnProperty.call(obj, 'result')) {
             var tmp = obj;
             payload = new SuccessObject(tmp.id, tmp.result);
             err = validateMessage(payload);
-            payloadType = RpcStatusType.success;
+            payloadType = "success" /* success */;
         }
         else if (hasOwnProperty.call(obj, 'error')) {
             var tmp = obj;
-            payloadType = RpcStatusType.error;
+            payloadType = "error" /* error */;
             if (tmp.error == null) {
                 err = JsonRpcError.internalError(tmp);
             }
@@ -321,7 +306,7 @@ var __extends = (this && this.__extends) || (function () {
         if (err == null && payload != null) {
             return new JsonRpcParsed(payload, payloadType);
         }
-        return new JsonRpcParsed(err != null ? err : JsonRpcError.invalidRequest(obj), RpcStatusType.invalid);
+        return new JsonRpcParsed(err != null ? err : JsonRpcError.invalidRequest(obj), "invalid" /* invalid */);
     }
     exports.parseObject = parseObject;
     // if error, return error, else return null
