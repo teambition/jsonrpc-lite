@@ -91,7 +91,7 @@ export class ErrorObject extends JsonRpc {
  * @param  {type: <Enum, 'request'|'notification'|'success'|'error'|'invalid'>} type
  * @api public
  */
-export enum RpcStatusType {
+export const enum RpcStatusType {
   request = 'request',
   notification = 'notification',
   success = 'success',
@@ -254,7 +254,8 @@ export interface IParsedObjectInvalid {
  *
  * @api public
  */
-type IParsedObject = IParsedObjectSuccess | IParsedObjectNotification | IParsedObjectRequest | IParsedObjectError | IParsedObjectInvalid;
+export type IParsedObject = IParsedObjectSuccess | IParsedObjectNotification |
+  IParsedObjectRequest | IParsedObjectError| IParsedObjectInvalid;
 
 export function parse (
   message: string,
@@ -276,9 +277,29 @@ export function parse (
     ) as IParsedObject
   }
 
+  return parseJsonRpcObject(jsonrpcObj)
+}
+
+/**
+ * Takes a JSON-RPC 2.0 payload (Object) or batch (Object[]) and tries to parse it.
+ * If successful, determine what objects are inside (response, notification,
+ * success, error, or invalid), and return their types and properly formatted objects.
+ *
+ * @param  {Object|Array} jsonrpcObj
+ * @return {Object|Array} a single object or an array of `JsonRpcParsed` objects with `type` and `payload`:
+ *
+ *  {
+ *    type: <Enum, 'request'|'notification'|'success'|'error'|'invalid'>
+ *    payload: <JsonRpc|JsonRpcError>
+ *  }
+ *
+ * @api public
+ */
+export function parseJsonRpcObject (jsonrpcObj: JsonRpc | JsonRpc[]): IParsedObject | IParsedObject[] {
   if (!Array.isArray(jsonrpcObj)) {
     return parseObject(jsonrpcObj)
   }
+
   if (jsonrpcObj.length === 0) {
     return new JsonRpcParsed(
       JsonRpcError.invalidRequest(jsonrpcObj),
@@ -295,11 +316,18 @@ export function parse (
 }
 
 /**
+ * Alias for `parse` method.
+ * Takes a JSON-RPC 2.0 payload (String) and tries to parse it into a JSON.
+ * @api public
+ */
+export const parseJsonRpcString = parse
+
+/**
  * Takes a JSON-RPC 2.0 payload (Object) and tries to parse it into a JSON.
  * If successful, determine what object is it (response, notification,
  * success, error, or invalid), and return it's type and properly formatted object.
  *
- * @param  {Object} msg
+ * @param  {Object} obj
  * @return {Object} an `JsonRpcParsed` object with `type` and `payload`:
  *
  *  {
@@ -462,6 +490,8 @@ const jsonrpc = {
   error,
   parse,
   parseObject,
+  parseJsonRpcObject,
+  parseJsonRpcString,
 }
 
 export default jsonrpc

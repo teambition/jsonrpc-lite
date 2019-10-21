@@ -32,11 +32,14 @@
     "typescript": "^3.3.3333"
   },
   "scripts": {
-    "test": "tslint -p tsconfig.json -t stylish jsonrpc.ts && tman"
+    "build": "tsc -p tsconfig.build.json",
+    "lint":"tslint -p tsconfig.json -t stylish jsonrpc.ts",
+    "test": "npm run lint && tman"
   },
   "files": [
     "README.md",
     "jsonrpc.js",
+    "jsonrpc.js.map",
     "jsonrpc.ts",
     "jsonrpc.d.ts"
   ]
