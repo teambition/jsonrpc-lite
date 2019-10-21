@@ -5,7 +5,7 @@
     "Yan Qing <admin@zensh.com>"
   ],
   "license": "MIT",
-  "version": "2.0.7",
+  "version": "2.1.0",
   "main": "jsonrpc.js",
   "types": "jsonrpc.d.ts",
   "repository": {
@@ -24,16 +24,16 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^11.11.3",
+    "@types/node": "^12.11.1",
     "tman": "^1.9.0",
-    "ts-node": "^8.0.3",
-    "tslint": "^5.14.0",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.6.4"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "lint":"tslint -p tsconfig.json -t stylish jsonrpc.ts",
+    "lint": "tslint -p tsconfig.json -t stylish jsonrpc.ts",
     "test": "npm run lint && tman"
   },
   "files": [
