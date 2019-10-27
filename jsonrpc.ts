@@ -481,7 +481,7 @@ function isObject (obj: any): boolean {
   return obj != null && typeof obj === 'object' && !Array.isArray(obj)
 }
 
-const jsonrpc = {
+const jsonRpcGlobal = {
   JsonRpc,
   JsonRpcError,
   request,
@@ -494,5 +494,13 @@ const jsonrpc = {
   parseJsonRpcString,
 }
 
-export default jsonrpc
-export { jsonrpc }
+export default jsonRpcGlobal
+export const jsonrpc: typeof jsonRpcGlobal = jsonRpcGlobal
+
+declare global {
+  const jsonrpc: typeof jsonRpcGlobal
+
+  interface Window { jsonrpc: typeof jsonRpcGlobal }
+}
+
+((global || window) as any).jsonrpc = jsonRpcGlobal // tslint:disable-line

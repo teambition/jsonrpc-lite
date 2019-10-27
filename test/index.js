@@ -392,5 +392,9 @@ function test (jsonrpc) {
     tman.it('jsonrpc.parseJsonRpcString', function() {
       assert.strictEqual(jsonrpc.parse, jsonrpc.parseJsonRpcString)
     })
+
+    tman.it('jsonrpc exposed as global', function() {
+      assert.strictEqual(!!global.jsonrpc, true)
+    })
   })
 }

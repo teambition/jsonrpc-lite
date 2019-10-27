@@ -3,10 +3,11 @@
     "compilerOptions": {
       "target": "es5",
       "module": "UMD",
+      "allowUmdGlobalAccess": true,
       "outDir": "./",
       "importHelpers": false,
       "noEmitHelpers": false,
-      "lib": ["es5"]
+      "lib": ["es5", "DOM"]
     },
     "include": [
       "jsonrpc.ts"

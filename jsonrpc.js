@@ -394,7 +394,7 @@ var __extends = (this && this.__extends) || (function () {
     function isObject(obj) {
         return obj != null && typeof obj === 'object' && !Array.isArray(obj);
     }
-    var jsonrpc = {
+    var jsonRpcGlobal = {
         JsonRpc: JsonRpc,
         JsonRpcError: JsonRpcError,
         request: request,
@@ -406,7 +406,8 @@ var __extends = (this && this.__extends) || (function () {
         parseJsonRpcObject: parseJsonRpcObject,
         parseJsonRpcString: exports.parseJsonRpcString,
     };
-    exports.jsonrpc = jsonrpc;
-    exports.default = jsonrpc;
+    exports.default = jsonRpcGlobal;
+    exports.jsonrpc = jsonRpcGlobal;
+    (global || window).jsonrpc = jsonRpcGlobal; // tslint:disable-line
 });
 //# sourceMappingURL=jsonrpc.js.map
