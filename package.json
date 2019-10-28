@@ -6,8 +6,15 @@
   ],
   "license": "MIT",
   "version": "2.1.0",
+  "source": "src/main/ts/index.ts",
   "main": "jsonrpc.js",
+  "module": "jsonrpc.mjs",
+  "unpkg": "jsonrpc.umd.js",
+  "browser": "jsonrpc.umd.js",
   "types": "jsonrpc.d.ts",
+  "typescript": {
+    "definition": "jsonrpc.d.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:teambition/jsonrpc-lite.git"
@@ -25,6 +32,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^12.11.1",
+    "microbundle": "^0.11.0",
     "tman": "^1.9.0",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
@@ -32,7 +40,9 @@
     "typescript": "^3.6.4"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build:tsc": "tsc -p tsconfig.build.json",
+    "build:rollup": "microbundle jsonrpc.ts",
+    "build": "yarn build:rollup",
     "lint": "tslint -p tsconfig.json -t stylish jsonrpc.ts",
     "test": "npm run lint && tman"
   },
@@ -41,6 +51,10 @@
     "jsonrpc.js",
     "jsonrpc.js.map",
     "jsonrpc.ts",
-    "jsonrpc.d.ts"
+    "jsonrpc.d.ts",
+    "jsonrpc.umd.js",
+    "jsonrpc.umd.js.map",
+    "jsonrpc.mjs",
+    "jsonrpc.mjs.map"
   ]
 }

@@ -2,7 +2,6 @@
     "compileOnSave": false,
     "compilerOptions": {
       "target": "es2018",
-      "module": "commonjs",
       "moduleResolution": "node",
       "outDir": "./build",
       "typeRoots": [
@@ -14,10 +13,10 @@
       ],
       "sourceMap": true,
       "declaration": true,
-      "importHelpers": true,
+      "importHelpers": false,
+      "noEmitHelpers": false,
       "newLine": "LF",
       "skipLibCheck": true,
-      "noEmitHelpers": true,
       "noImplicitReturns": false,
       "strict": true,
       "strictNullChecks": true,
