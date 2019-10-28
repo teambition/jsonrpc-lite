@@ -32,6 +32,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^12.11.1",
+    "esm": "^3.2.25",
     "microbundle": "^0.11.0",
     "tman": "^1.9.0",
     "ts-node": "^8.4.1",
@@ -41,8 +42,8 @@
   },
   "scripts": {
     "build:tsc": "tsc -p tsconfig.build.json",
-    "build:rollup": "microbundle jsonrpc.ts",
-    "build": "yarn build:rollup",
+    "build:microbundle": "microbundle jsonrpc.ts --name jsonrpc --strict",
+    "build": "yarn build:microbundle",
     "lint": "tslint -p tsconfig.json -t stylish jsonrpc.ts",
     "test": "npm run lint && tman"
   },

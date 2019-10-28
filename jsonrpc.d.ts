@@ -187,7 +187,7 @@ export declare const parseJsonRpcString: typeof parse;
  * @api public
  */
 export declare function parseObject(obj: any): IParsedObject;
-declare const jsonRpcGlobal: {
+export declare const jsonrpc: {
     JsonRpc: typeof JsonRpc;
     JsonRpcError: typeof JsonRpcError;
     request: typeof request;
@@ -199,11 +199,4 @@ declare const jsonRpcGlobal: {
     parseJsonRpcObject: typeof parseJsonRpcObject;
     parseJsonRpcString: typeof parse;
 };
-export default jsonRpcGlobal;
-export declare const jsonrpc: typeof jsonRpcGlobal;
-declare global {
-    const jsonrpc: typeof jsonRpcGlobal;
-    interface Window {
-        jsonrpc: typeof jsonRpcGlobal;
-    }
-}
+export default jsonrpc;
