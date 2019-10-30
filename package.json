@@ -6,7 +6,7 @@
   ],
   "license": "MIT",
   "version": "2.1.0",
-  "source": "src/main/ts/index.ts",
+  "source": "jsonrpc.ts",
   "main": "jsonrpc.js",
   "module": "jsonrpc.mjs",
   "unpkg": "jsonrpc.umd.js",
@@ -42,10 +42,10 @@
   },
   "scripts": {
     "build:tsc": "tsc -p tsconfig.build.json",
-    "build:microbundle": "microbundle jsonrpc.ts --name jsonrpc --strict",
+    "build:microbundle": "microbundle build jsonrpc.ts --name jsonrpc --strict",
     "build": "yarn build:microbundle",
     "lint": "tslint -p tsconfig.json -t stylish jsonrpc.ts",
-    "test": "npm run lint && tman"
+    "test": "yarn lint && tman"
   },
   "files": [
     "README.md",
