@@ -7,13 +7,13 @@
   "license": "MIT",
   "version": "2.1.0",
   "source": "jsonrpc.ts",
-  "main": "target/es5/jsonrpc.js",
+  "main": "target/umd/jsonrpc.js",
   "module": "target/mjs/jsonrpc.mjs",
   "unpkg": "target/umd/jsonrpc.js",
   "browser": "target/umd/jsonrpc.js",
-  "types": "target/es5/jsonrpc.d.ts",
+  "types": "target/umd/jsonrpc.d.ts",
   "typescript": {
-    "definition": "target/es5/jsonrpc.d.ts"
+    "definition": "target/umd/jsonrpc.d.ts"
   },
   "repository": {
     "type": "git",
