@@ -12,6 +12,9 @@ cache:
   directories:
     - node_modules
 
+before_install:
+  - sudo apt-get install moreutils
+
 install:
   - yarn install
   - yarn build
