@@ -3,9 +3,9 @@
 const assert = require('assert')
 const tman = require('tman')
 
-test(require('../jsonrpc.js'))
-test(require('../jsonrpc.umd'))
-test(require('esm')(module)('../jsonrpc.mjs'))
+test(require('../target/es5/jsonrpc.js'))
+test(require('../target/umd/jsonrpc.js'))
+test(require('esm')(module)('../target/mjs/jsonrpc.mjs'))
 
 require('ts-node/register')
 test(require('../jsonrpc.ts').default)
@@ -393,6 +393,10 @@ function test (jsonrpc) {
 
     tman.it('jsonrpc.parseJsonRpcString', function() {
       assert.strictEqual(jsonrpc.parse, jsonrpc.parseJsonRpcString)
+    })
+
+    tman.it('jsonrpc exposed as global', function() {
+      assert.strictEqual(!!global.jsonrpc, true)
     })
   })
 }

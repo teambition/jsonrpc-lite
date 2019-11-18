@@ -1,0 +1,93 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn add @types/global global
+
+PATH: 
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/antongolub/projects/jsonrpc-lite/node_modules/.bin
+
+Yarn version: 
+  1.17.3
+
+Node version: 
+  12.6.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@types%2fglobal: Not found
+      at Request.params.callback [as _callback] (/usr/local/lib/node_modules/yarn/lib/cli.js:66830:18)
+      at Request.self.callback (/usr/local/lib/node_modules/yarn/lib/cli.js:140464:22)
+      at Request.emit (events.js:203:13)
+      at Request.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141436:10)
+      at Request.emit (events.js:203:13)
+      at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141358:12)
+      at Object.onceWrapper (events.js:291:20)
+      at IncomingMessage.emit (events.js:208:15)
+      at endReadableNT (_stream_readable.js:1154:12)
+      at processTicksAndRejections (internal/process/task_queues.js:77:11)
+
+npm manifest: 
+  {
+    "name": "jsonrpc-lite",
+    "description": "Parse and Serialize JSON-RPC2 messages in node.js or browser.",
+    "authors": [
+      "Yan Qing <admin@zensh.com>"
+    ],
+    "license": "MIT",
+    "version": "2.1.0",
+    "source": "jsonrpc.ts",
+    "main": "target/es5/jsonrpc.js",
+    "module": "target/mjs/jsonrpc.mjs",
+    "unpkg": "target/umd/jsonrpc.js",
+    "browser": "target/umd/jsonrpc.js",
+    "types": "target/es5/jsonrpc.d.ts",
+    "typescript": {
+      "definition": "target/es5/jsonrpc.d.ts"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git@github.com:teambition/jsonrpc-lite.git"
+    },
+    "homepage": "https://github.com/teambition/jsonrpc-lite",
+    "keywords": [
+      "json",
+      "jsonrpc",
+      "json-rpc",
+      "jsonrpc2",
+      "serialize",
+      "parse",
+      "message"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+      "@types/node": "^12.11.1",
+      "esm": "^3.2.25",
+      "terser": "^4.4.0",
+      "tman": "^1.9.0",
+      "ts-node": "^8.4.1",
+      "tslint": "^5.20.0",
+      "tslint-eslint-rules": "^5.4.0",
+      "typescript": "^3.6.4"
+    },
+    "scripts": {
+      "build:umd": "tsc -p tsconfig.build.json --module UMD --target ES5 --outDir ./target/umd",
+      "polyfill": "cat browser.js target/umd/jsonrpc.js | sponge target/umd/jsonrpc.js",
+      "build:mjs": "tsc -p tsconfig.build.json --module es2015 --target ES6 --outDir ./target/mjs",
+      "build:es5": "tsc -p tsconfig.build.json --module CommonJS --target ES5 --outDir ./target/es5",
+      "build": "yarn build:es5 && yarn build:mjs && yarn build:umd && yarn polyfill && yarn compact",
+      "compact": "for f in $(find target -name '*.js'); do short=${f%.js}; terser -c -m --source-map -o $short.js -- $f; done",
+      "lint": "tslint -p tsconfig.json -t stylish jsonrpc.ts",
+      "test": "yarn lint && tman"
+    },
+    "files": [
+      "README.md",
+      "jsonrpc.ts",
+      "target"
+    ]
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

@@ -481,7 +481,7 @@ function isObject (obj: any): boolean {
   return obj != null && typeof obj === 'object' && !Array.isArray(obj)
 }
 
-export const jsonrpc = {
+const jsonRpcGlobal = {
   JsonRpc,
   JsonRpcError,
   request,
@@ -494,4 +494,24 @@ export const jsonrpc = {
   parseJsonRpcString,
 }
 
-export default jsonrpc
+export default jsonRpcGlobal
+export const jsonrpc: typeof jsonRpcGlobal = jsonRpcGlobal
+
+function getGlobalThis (): any {
+  if (typeof globalThis !== 'undefined') { return globalThis }
+  if (typeof self !== 'undefined') { return self }
+  if (typeof window !== 'undefined') { return window }
+  if (typeof global !== 'undefined') { return global }
+  // @ts-ignore
+  if (typeof this !== 'undefined') { return this }
+
+  throw new Error('Unable to locate global `this`')
+}
+
+declare global {
+  const jsonrpc: typeof jsonRpcGlobal
+
+  interface Window { jsonrpc: typeof jsonRpcGlobal }
+}
+
+getGlobalThis().jsonrpc = jsonRpcGlobal

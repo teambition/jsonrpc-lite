@@ -7,13 +7,13 @@
   "license": "MIT",
   "version": "2.1.0",
   "source": "jsonrpc.ts",
-  "main": "jsonrpc.js",
-  "module": "jsonrpc.mjs",
-  "unpkg": "jsonrpc.umd.js",
-  "browser": "jsonrpc.umd.js",
-  "types": "jsonrpc.d.ts",
+  "main": "target/es5/jsonrpc.js",
+  "module": "target/mjs/jsonrpc.mjs",
+  "unpkg": "target/umd/jsonrpc.js",
+  "browser": "target/umd/jsonrpc.js",
+  "types": "target/es5/jsonrpc.d.ts",
   "typescript": {
-    "definition": "jsonrpc.d.ts"
+    "definition": "target/es5/jsonrpc.d.ts"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
   "devDependencies": {
     "@types/node": "^12.11.1",
     "esm": "^3.2.25",
-    "microbundle": "^0.11.0",
+    "terser": "^4.4.0",
     "tman": "^1.9.0",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
@@ -41,21 +41,19 @@
     "typescript": "^3.6.4"
   },
   "scripts": {
-    "build:tsc": "tsc -p tsconfig.build.json",
-    "build:microbundle": "microbundle build jsonrpc.ts --name jsonrpc --strict",
-    "build": "yarn build:microbundle",
+    "build:umd": "tsc -p tsconfig.build.json --module UMD --target ES5 --outDir ./target/umd",
+    "polyfill": "cat browser.js target/umd/jsonrpc.js | sponge target/umd/jsonrpc.js",
+    "build:mjs": "tsc -p tsconfig.build.json --module es2015 --target ES6 --outDir ./target/mjs",
+    "build:es5": "tsc -p tsconfig.build.json --module CommonJS --target ES5 --outDir ./target/es5",
+    "build": "yarn build:es5 && yarn build:mjs && yarn build:umd && yarn polyfill && yarn compact && yarn namefix",
+    "compact": "for f in $(find target -name '*.js'); do short=${f%.js}; terser -c -m --source-map -o $short.js -- $f; done",
+    "namefix": "find target/mjs -name '*.js*' -exec bash -c ' mv $0 ${0/.js/.mjs}' {} \\;",
     "lint": "tslint -p tsconfig.json -t stylish jsonrpc.ts",
     "test": "yarn lint && tman"
   },
   "files": [
     "README.md",
-    "jsonrpc.js",
-    "jsonrpc.js.map",
     "jsonrpc.ts",
-    "jsonrpc.d.ts",
-    "jsonrpc.umd.js",
-    "jsonrpc.umd.js.map",
-    "jsonrpc.mjs",
-    "jsonrpc.mjs.map"
+    "target"
   ]
 }

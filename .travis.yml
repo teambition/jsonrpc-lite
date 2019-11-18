@@ -13,10 +13,8 @@ cache:
     - node_modules
 
 install:
-  - 'if [ "${TRAVIS_NODE_VERSION}" = "6" ] ; then nvm use 8 ; fi ;'
   - yarn install
   - yarn build
-  - 'if [ "${TRAVIS_NODE_VERSION}" = "6" ] ; then nvm use "${TRAVIS_NODE_VERSION}" && node --version ; fi ;'
 
 script:
   - yarn test
