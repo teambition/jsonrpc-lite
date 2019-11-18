@@ -1,6 +1,6 @@
 "use strict";
 
-const jsonrpc = require('../jsonrpc');
+const jsonrpc = require('../target/umd/jsonrpc');
 
 const requestObj = jsonrpc.request('123', 'update', {list: [1, 2, 3]});
 const notificationObj = jsonrpc.notification('update', {list: [1, 2, 3]})
