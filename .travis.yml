@@ -1,9 +1,23 @@
 language: node_js
+sudo: false
+
 node_js:
   - "6"
   - "8"
   - "10"
-sudo: false
+  - "12"
+  - "13"
+
 cache:
   directories:
     - node_modules
+
+before_install:
+  - sudo apt-get install moreutils
+
+install:
+  - yarn install
+  - yarn build
+
+script:
+  - yarn test

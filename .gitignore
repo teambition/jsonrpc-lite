@@ -7,3 +7,19 @@ test.js
 npm-debug.log
 .DS_Store
 .esm-cache
+
+# Bundle
+target
+
+# Typescript
+*.tsbuildinfo
+.tsbuildinfo
+buildcache
+.buildcache
+.rts2_cache_cjs
+.rts2_cache_es
+.rts2_cache_umd
+
+# Yarn
+yarn.lock
+yarn-error.log
