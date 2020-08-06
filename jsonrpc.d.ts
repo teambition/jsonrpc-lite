@@ -1,4 +1,4 @@
-export declare type ID = string | number;
+export declare type ID = string | number | null;
 export declare type Defined = string | number | boolean | object | null;
 export declare type RpcParams = object | Defined[];
 /**

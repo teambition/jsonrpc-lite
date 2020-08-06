@@ -4,7 +4,7 @@
 // **License:** MIT
 'use strict'
 
-export type ID = string | number
+export type ID = string | number | null
 export type Defined = string | number | boolean | object | null
 export type RpcParams = object | Defined[]
 
