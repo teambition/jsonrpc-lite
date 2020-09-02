@@ -3,7 +3,8 @@
 const assert = require('assert')
 const tman = require('tman')
 
-test(require('../jsonrpc'))
+test(require('../jsonrpc.js'))
+test(require('../dist/umd/jsonrpc.js'))
 
 require('ts-node/register')
 test(require('../jsonrpc.ts').default)

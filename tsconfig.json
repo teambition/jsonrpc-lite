@@ -1,36 +1,37 @@
 {
-    "compileOnSave": false,
-    "compilerOptions": {
-      "target": "es2018",
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "outDir": "./build",
-      "typeRoots": [
-        "node_modules/@types"
-      ],
-      "lib": [
-        "es2018"
-      ],
-      "sourceMap": true,
-      "declaration": true,
-      "importHelpers": true,
-      "newLine": "LF",
-      "skipLibCheck": true,
-      "noEmitHelpers": true,
-      "noImplicitReturns": false,
-      "strict": true,
-      "strictNullChecks": true,
-      "noUnusedLocals": true,
-      "noUnusedParameters": true,
-      "allowSyntheticDefaultImports": true,
-      "esModuleInterop": true
-    },
-    "include": [
-      "jsonrpc.ts"
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "outDir": "./",
+    "typeRoots": [
+      "node_modules/@types"
     ],
-    "exclude": [
-      "node_modules",
-      "build",
-      "test"
-    ]
-  }
+    "lib": [
+      "ES5",
+      "ES6"
+    ],
+    "sourceMap": true,
+    "declaration": true,
+    "importHelpers": false,
+    "newLine": "LF",
+    "skipLibCheck": true,
+    "noEmitHelpers": false,
+    "noImplicitReturns": false,
+    "strict": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "jsonrpc.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "test"
+  ]
+}
